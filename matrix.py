@@ -27,6 +27,9 @@ class Matrix:
             rndY = randint(0, self.size - 1)
         return Vector(rndX, rndY)
 
+    def set_rnd_empty_case(self, nb):
+        vec = self.get_rnd_empty_case()
+        self.matrix[vec.x][vec.y] = nb
     def go_up(self):
         for i in range(self.size):
             for j in range(self.size):
