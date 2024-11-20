@@ -1,15 +1,24 @@
 from matrix import Matrix
+from player import Player
 
-matrix = Matrix(6)
-matrix.matrix[4][3] = 2
-matrix.matrix[3][3] = 2
-matrix.matrix[5][3] = 4
-matrix.matrix[4][2] = 2
+def start_board(matrix):
+    vec = matrix.get_rnd_empty_case()
+    matrix.matrix[vec.x][vec.y] = 2
+    vec = matrix.get_rnd_empty_case()
+    matrix.matrix[vec.x][vec.y] = 2
+    matrix.display()
 
-matrix.display()
-print("\n")
-matrix.mouv_up()
-matrix.display()
+def game_loop(matrix, player):
+    while not player.finish:
+        inp = input()
+        print()
+        matrix.move(inp)
+        vec = matrix.get_rnd_empty_case()
+        matrix.matrix[vec.x][vec.y] = 2
+        matrix.display()
 
+player = Player("Jeremy")
+matrix = Matrix()
 
-
+start_board(matrix)
+game_loop(matrix, player)
