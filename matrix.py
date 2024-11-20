@@ -30,6 +30,7 @@ class Matrix:
     def set_rnd_empty_case(self, nb):
         vec = self.get_rnd_empty_case()
         self.matrix[vec.x][vec.y] = nb
+
     def go_up(self):
         for i in range(self.size):
             for j in range(self.size):
@@ -48,7 +49,21 @@ class Matrix:
                     self.matrix[i][j] = 0
                     self.matrix[i - 1][j] *= 2
 
-    def mouv_up(self):
+    def move_up(self):
         self.go_up()
         self.merge_up()
         self.go_up()
+
+    def move_inp(self):
+        inp = input()
+        if inp == "z":
+            self.move_up()
+        elif inp == "s":
+            self.vec = Vector(-1, 0)
+        elif inp == "q":
+            self.vec = Vector(0, 1)
+        elif inp == "d":
+            self.vec = Vector(0, -1)
+        else:
+            self.move_inp()
+            return
