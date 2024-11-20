@@ -10,9 +10,8 @@ def start_board(matrix):
 
 def game_loop(matrix, player):
     while not player.finish:
-        inp = input()
         print()
-        matrix.move(inp)
+        matrix.move_inp()
         matrix.set_rnd_empty_case(2)
         matrix.display()
 
