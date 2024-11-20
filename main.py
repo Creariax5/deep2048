@@ -13,8 +13,7 @@ def game_loop(matrix, player):
         inp = input()
         print()
         matrix.move(inp)
-        vec = matrix.get_rnd_empty_case()
-        matrix.matrix[vec.x][vec.y] = 2
+        matrix.set_rnd_empty_case(2)
         matrix.display()
 
 player = Player("Jeremy")
