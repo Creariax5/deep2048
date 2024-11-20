@@ -1,8 +1,9 @@
 from matrix import Matrix
 
-size = 5
-matrix = Matrix(2)
+matrix = Matrix()
 
 matrix.display()
-
-
+vec = matrix.get_rnd_empty_case()
+print()
+matrix.matrix[vec.x][vec.y] = 2
+matrix.display()
