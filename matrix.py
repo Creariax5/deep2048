@@ -1,5 +1,4 @@
 from random import randint
-
 from vector import Vector
 
 
@@ -27,3 +26,6 @@ class Matrix:
             rndX = randint(0, self.size - 1)
             rndY = randint(0, self.size - 1)
         return Vector(rndX, rndY)
+
+    def move(self, inp):
+        pass
