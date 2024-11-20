@@ -1,5 +1,4 @@
 from random import randint
-
 from vector import Vector
 
 
@@ -50,4 +49,3 @@ class Matrix:
         self.go_up()
         self.merge_up()
         self.go_up()
-
