@@ -19,4 +19,4 @@ player = Player("Jeremy")
 matrix = Matrix()
 
 start_board(matrix)
-game_loop(matrix, player)
+game_loop(matrix,player)

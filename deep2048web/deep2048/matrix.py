@@ -61,16 +61,85 @@ class Matrix:
         self.merge_up()
         self.go_up()
 
+    def go_down(self):
+        for i in range(self.size - 1, -1, -1):
+            for j in range(self.size - 1, -1 ,-1):
+                if self.matrix[i][j] != 0:
+                    k = i
+                    while k < self.size -1 and self.matrix[k + 1][j] == 0:
+                        temp = self.matrix[k][j]
+                        self.matrix[k][j] = self.matrix[k + 1][j]
+                        self.matrix[k + 1][j] = temp
+                        k += 1
+
+    def merge_down(self):
+        for i in range(self.size - 2, -1, -1):
+            for j in range(self.size - 1, -1 ,-1):
+                if self.matrix[i][j] == self.matrix[i + 1][j] and i < self.size -1:
+                    self.matrix[i][j] = 0
+                    self.matrix[i + 1][j] *= 2
+
+    def move_down(self):
+        self.go_down()
+        self.merge_down()
+        self.go_down()
+
+    def go_left(self):
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.matrix[i][j] != 0:
+                    k = j
+                    while k > 0 and self.matrix[i][k - 1] == 0:
+                        temp = self.matrix[i][k]
+                        self.matrix[i][k] = self.matrix[i][k - 1]
+                        self.matrix[i][k - 1] = temp
+                        k -= 1
+
+    def merge_left(self):
+        for i in range(self.size):
+            for j in range(1, self.size):
+                if self.matrix[i][j] == self.matrix[i][j - 1] and j > 0:
+                    self.matrix[i][j] = 0
+                    self.matrix[i][j - 1] *= 2
+
+    def move_left(self):
+        self.go_left()
+        self.merge_left()
+        self.go_left()
+
+    def go_right(self):
+        for i in range(self.size - 1, -1, -1):
+            for j in range(self.size - 1, -1 ,-1):
+                if self.matrix[i][j] != 0:
+                    k = j
+                    while k < self.size -1 and self.matrix[i][k + 1] == 0:
+                        temp = self.matrix[i][k]
+                        self.matrix[i][k] = self.matrix[i][k + 1]
+                        self.matrix[i][k + 1] = temp
+                        k += 1
+
+    def merge_right(self):
+        for i in range(self.size - 1, -1, -1):
+            for j in range(self.size - 2, -1 ,-1):
+                if self.matrix[i][j] == self.matrix[i][j + 1] and j < self.size -1:
+                    self.matrix[i][j] = 0
+                    self.matrix[i][j + 1] *= 2
+
+    def move_right(self):
+        self.go_right()
+        self.merge_right()
+        self.go_right()
+
     def move_inp(self):
         inp = input()
-        if inp == "z":
+        if inp == "up":
             self.move_up()
-        elif inp == "s":
-            self.vec = Vector(-1, 0)
-        elif inp == "q":
-            self.vec = Vector(0, 1)
-        elif inp == "d":
-            self.vec = Vector(0, -1)
+        elif inp == "down":
+            self.move_down()
+        elif inp == "left":
+            self.move_left()
+        elif inp == "right":
+            self.move_right()
         else:
             self.move_inp()
             return
