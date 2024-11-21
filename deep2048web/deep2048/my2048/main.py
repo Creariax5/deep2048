@@ -1,5 +1,5 @@
-from matrix import Matrix
-from player import Player
+from deep2048web.deep2048.matrix import Matrix
+from deep2048web.deep2048.player import Player
 
 def start_board(matrix):
     vec = matrix.get_rnd_empty_case()
