@@ -1,5 +1,5 @@
 from random import randint
-from vector import Vector
+from .vector import Vector
 
 
 class Matrix:
@@ -9,22 +9,29 @@ class Matrix:
         self.create()
 
     def create(self):
+        self.matrix = []
         for i in range(self.size):
             tmp = []
             for j in range(self.size):
                 tmp.append(0)
             self.matrix.append(tmp)
+    
+    def reset(self):
+        self.create()
+        self.set_rnd_empty_case(2)
 
     def display(self):
         for i in range(self.size):
             print(self.matrix[i])
 
     def get_rnd_empty_case(self):
+        nb = 0
         rndX = randint(0, self.size - 1)
         rndY = randint(0, self.size - 1)
-        while self.matrix[rndX][rndY] != 0:
+        while self.matrix[rndX][rndY] != 0 and nb < 1000:
             rndX = randint(0, self.size - 1)
             rndY = randint(0, self.size - 1)
+            nb += 1
         return Vector(rndX, rndY)
 
     def set_rnd_empty_case(self, nb):

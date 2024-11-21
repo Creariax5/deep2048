@@ -1,10 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>2048</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-
+    <div class="center">
+        <h1>
+            2048
+        </h1>
+    </div>
+    <div id="matrix-container" class="center">
+        <div class="row">
+            {% for line in matrix %}
+                <div class="col">
+                    {% for case in line %}
+                        <div class="block">{{ case }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="center">
+        
+            <button onclick="moveMatrix('up')">Up</button>
+            <button onclick="resetMatrix()">Reset</button>
+        </div>
+    </div>
 </body>
+{% csrf_token %}
+<script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    function moveMatrix(direction) {
+        $.ajax({
+            url: '/update/',  // Make sure this matches your urls.py
+            type: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            data: {
+                'direction': direction
+            },
+            success: function(response) {
+                updateDisplay(response.matrix);
+            }
+        });
+    }
+
+    function resetMatrix() {
+        $.ajax({
+            url: '/reset/',  // Make sure this matches your urls.py
+            type: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            success: function(response) {
+                updateDisplay(response.matrix);
+            }
+        });
+    }
+
+    function updateDisplay(matrix) {
+        let html = '';
+        matrix.forEach(line => {
+            html += '<p>';
+            line.forEach(cell => {
+                html += cell + ' ';
+            });
+            html += '</p>';
+        });
+        $('#matrix-container').html(html);
+    }
+
+    // Optional: Add keyboard controls
+    document.addEventListener('keydown', function(event) {
+        switch(event.key) {
+            case 'ArrowUp':
+                moveMatrix('up');
+                break;
+            /*case 'ArrowDown':
+                moveMatrix('down');
+                break;
+            case 'ArrowLeft':
+                moveMatrix('left');
+                break;
+            case 'ArrowRight':
+                moveMatrix('right');
+                break;*/
+        }
+    });
+</script>
 </html>
