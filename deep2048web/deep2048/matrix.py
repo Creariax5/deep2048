@@ -21,7 +21,7 @@ class Matrix:
         self.create()
         self.set_rnd_empty_case(2)
         self.set_rnd_empty_case(2)
-        self.player.score = 0
+        self.player = Player(self.player.name)
 
     def display(self):
         for i in range(self.size):

@@ -32,6 +32,19 @@
     <div class="center">
         <button onclick="resetMatrix()">Reset</button>
     </div>
+    <div class="form">
+        <div class="form">
+          <label for="size">Grid size: </label>
+          <input id="number" type="number" value="4" />
+        </div>
+        <label for="pet-select">Choose a model:</label>
+        <select name="model" id="model-select">
+            <option value="">--Please choose a model--</option>
+            <option value="human">Play myself</option>
+            <option value="random">Random</option>
+        </select>
+        <button onclick="updateRules()">Update</button>
+    </div>
 </body>
 {% csrf_token %}
 <script>
