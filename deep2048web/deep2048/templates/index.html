@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>2048</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static '/style.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -12,28 +12,31 @@
         <h1>
             2048
         </h1>
+        <h3 id="score">
+            Score: 0
+        </h3>
     </div>
-    <div id="matrix-container" class="center">
-        <div class="row">
-            {% for line in matrix %}
-                <div class="col">
-                    {% for case in line %}
-                        <div class="block">{{ case }}</div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+    <div class="center">
+        <div id="matrix-container">
+            <div class="row">
+                {% for line in matrix %}
+                    <div class="col">
+                        {% for case in line %}
+                            <div class="block">{{ case }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
     <div class="center">
-        
-            <button onclick="moveMatrix('up')">Up</button>
-            <button onclick="resetMatrix()">Reset</button>
-        </div>
+        <button onclick="resetMatrix()">Reset</button>
     </div>
 </body>
 {% csrf_token %}
 <script>
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    updateDisplay({{ matrix }}, 0);
 
     function moveMatrix(direction) {
         $.ajax({
@@ -44,7 +47,7 @@
                 'direction': direction
             },
             success: function(response) {
-                updateDisplay(response.matrix);
+                updateDisplay(response.matrix, response.score);
             }
         });
     }
@@ -55,23 +58,28 @@
             type: 'POST',
             headers: {'X-CSRFToken': csrftoken},
             success: function(response) {
-                updateDisplay(response.matrix);
+                updateDisplay(response.matrix, response.score);
             }
         });
     }
 
-    function updateDisplay(matrix) {
+    function updateDisplay(matrix, score) {
         let html = '';
         html += '<div class="row">';
         matrix.forEach(line => {
             html += '<div class="col">';
-            line.forEach(cell => {
-                html += '<div class="block">' + cell + '</div>';
-            });
+                line.forEach(cell => {
+                    if (cell < 2) {
+                        html += '<div class="block block"></div>';
+                    } else {
+                        html += '<div class="block block' + cell + '">' + cell + '</div>';
+                    }
+                });
             html += '</div>';
         });
         html += '</div>';
         $('#matrix-container').html(html);
+        $('#score').html("Score " + score);
     }
 
     // Optional: Add keyboard controls

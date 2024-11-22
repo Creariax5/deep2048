@@ -1,11 +1,12 @@
 from random import randint
 from .vector import Vector
+from .player import Player
 
 class Matrix:
-    def __init__(self, player, size=6):
+    def __init__(self, name, size=6):
         self.size = size
         self.matrix = []
-        self.player = player
+        self.player = Player(name)
         self.create()
 
     def create(self):
@@ -20,6 +21,7 @@ class Matrix:
         self.create()
         self.set_rnd_empty_case(2)
         self.set_rnd_empty_case(2)
+        self.player.score = 0
 
     def display(self):
         for i in range(self.size):
@@ -61,6 +63,7 @@ class Matrix:
                 if self.matrix[i][j] == self.matrix[i - 1][j] and i > 0:
                     self.matrix[i][j] = 0
                     self.matrix[i - 1][j] *= 2
+                    self.player.score += self.matrix[i - 1][j]
 
     def move_up(self):
         self.go_up()
@@ -84,6 +87,7 @@ class Matrix:
                 if self.matrix[i][j] == self.matrix[i + 1][j] and i < self.size -1:
                     self.matrix[i][j] = 0
                     self.matrix[i + 1][j] *= 2
+                    self.player.score += self.matrix[i + 1][j]
 
     def move_down(self):
         self.go_down()
@@ -107,6 +111,7 @@ class Matrix:
                 if self.matrix[i][j] == self.matrix[i][j - 1] and j > 0:
                     self.matrix[i][j] = 0
                     self.matrix[i][j - 1] *= 2
+                    self.player.score += self.matrix[i][j - 1]
 
     def move_left(self):
         self.go_left()
@@ -130,6 +135,7 @@ class Matrix:
                 if self.matrix[i][j] == self.matrix[i][j + 1] and j < self.size -1:
                     self.matrix[i][j] = 0
                     self.matrix[i][j + 1] *= 2
+                    self.player.score += self.matrix[i][j + 1]
 
     def move_right(self):
         self.go_right()

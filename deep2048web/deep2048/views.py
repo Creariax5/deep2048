@@ -5,8 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .matrix import Matrix
 from .player import Player
 
-player = Player("Jeremy")
-matrix = Matrix(player, 8)
+matrix = Matrix("Jeremy", 4)
 
 def index(request):
     matrix.reset()
@@ -20,9 +19,9 @@ def update_matrix(request):
         direction = request.POST.get('direction')
         matrix.move_inp(direction)  # Update the matrix
         matrix.set_rnd_empty_case(2)
-        return JsonResponse({'matrix': matrix.matrix})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
 
 def reset_matrix(request):
     if request.method == "POST":
         matrix.reset()
-        return JsonResponse({'matrix': matrix.matrix})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
