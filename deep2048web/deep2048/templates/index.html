@@ -62,13 +62,15 @@
 
     function updateDisplay(matrix) {
         let html = '';
+        html += '<div class="row">';
         matrix.forEach(line => {
-            html += '<p>';
+            html += '<div class="col">';
             line.forEach(cell => {
-                html += cell + ' ';
+                html += '<div class="block">' + cell + '</div>';
             });
-            html += '</p>';
+            html += '</div>';
         });
+        html += '</div>';
         $('#matrix-container').html(html);
     }
 
@@ -78,7 +80,7 @@
             case 'ArrowUp':
                 moveMatrix('up');
                 break;
-            /*case 'ArrowDown':
+            case 'ArrowDown':
                 moveMatrix('down');
                 break;
             case 'ArrowLeft':
@@ -86,7 +88,7 @@
                 break;
             case 'ArrowRight':
                 moveMatrix('right');
-                break;*/
+                break;
         }
     });
 </script>

@@ -3,11 +3,13 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .matrix import Matrix
+from .player import Player
 
-matrix = Matrix()
+player = Player("Jeremy")
+matrix = Matrix(player, 8)
 
 def index(request):
-    reset_matrix(request)
+    matrix.reset()
     context = {
         "matrix": matrix.matrix,
     }
@@ -16,7 +18,7 @@ def index(request):
 def update_matrix(request):
     if request.method == "POST":
         direction = request.POST.get('direction')
-        matrix.move_up()  # Update the matrix
+        matrix.move_inp(direction)  # Update the matrix
         matrix.set_rnd_empty_case(2)
         return JsonResponse({'matrix': matrix.matrix})
 

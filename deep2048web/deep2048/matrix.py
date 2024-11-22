@@ -1,11 +1,11 @@
 from random import randint
 from .vector import Vector
 
-
 class Matrix:
-    def __init__(self, size=6):
+    def __init__(self, player, size=6):
         self.size = size
         self.matrix = []
+        self.player = player
         self.create()
 
     def create(self):
@@ -18,6 +18,7 @@ class Matrix:
     
     def reset(self):
         self.create()
+        self.set_rnd_empty_case(2)
         self.set_rnd_empty_case(2)
 
     def display(self):
@@ -32,11 +33,16 @@ class Matrix:
             rndX = randint(0, self.size - 1)
             rndY = randint(0, self.size - 1)
             nb += 1
+        if (nb >= 1000):
+            return None
         return Vector(rndX, rndY)
 
     def set_rnd_empty_case(self, nb):
         vec = self.get_rnd_empty_case()
-        self.matrix[vec.x][vec.y] = nb
+        if (vec == None):
+            self.player.finish = True
+        else:
+            self.matrix[vec.x][vec.y] = nb
 
     def go_up(self):
         for i in range(self.size):
@@ -130,16 +136,12 @@ class Matrix:
         self.merge_right()
         self.go_right()
 
-    def move_inp(self):
-        inp = input()
-        if inp == "up":
+    def move_inp(self, direction):
+        if direction == "up":
             self.move_up()
-        elif inp == "down":
+        elif direction == "down":
             self.move_down()
-        elif inp == "left":
+        elif direction == "left":
             self.move_left()
-        elif inp == "right":
+        elif direction == "right":
             self.move_right()
-        else:
-            self.move_inp()
-            return
