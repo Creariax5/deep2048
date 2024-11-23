@@ -9,12 +9,15 @@
 </head>
 <body>
     <div class="center">
-        <h1>
-            2048
-        </h1>
-        <h3 id="score">
-            Score: 0
-        </h3>
+        <div>
+            <h1>
+                2048
+            </h1>
+            <h3 id="score">
+                Score: 0
+            </h3>
+        </div>
+        <h2 id = "loose"></h2>
     </div>
     <div class="center">
         <div id="matrix-container">
@@ -38,7 +41,7 @@
           <input id="number" type="number" value="4" />
         </div>
         <div class="slidecontainer">
-            <div class="range-slider" style='--min:0; --max:100; --step:5; --value:75; --text-value:"75";'>
+            <input onchange="changeSize()" type="range" min="4" max="9" value="1" class="slider" id="myRange">
         </div>
         <label for="pet-select">Choose a model:</label>
         <select name="model" id="model-select">
@@ -47,6 +50,7 @@
             <option value="random">Random</option>
         </select>
         <button onclick="updateRules()">Update</button>
+        <button onclick="testloose()">Test loose</button>
     </div>
 </body>
 {% csrf_token %}
@@ -63,7 +67,18 @@
                 'direction': direction
             },
             success: function(response) {
-                updateDisplay(response.matrix, response.score);
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    function moveRandom(direction) {
+        $.ajax({
+            url: '/update_random/',  // Make sure this matches your urls.py
+            type: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            success: function(response) {
+                updateDisplay(response.matrix, response.score, response.win);
             }
         });
     }
@@ -79,9 +94,10 @@
         });
     }
 
-    function updateDisplay(matrix, score) {
+    function updateDisplay(matrix, score, win) {
         let html = '';
         html += '<div class="row">';
+        console.log(win)
         matrix.forEach(line => {
             html += '<div class="col">';
                 line.forEach(cell => {
@@ -94,6 +110,11 @@
             html += '</div>';
         });
         html += '</div>';
+        if (win == 0) {
+            $('#loose').html("you loose");
+        } else {
+            $('#loose').html("");
+        }
         $('#matrix-container').html(html);
         $('#score').html("Score " + score);
     }
@@ -114,6 +135,31 @@
         });
     }
 
+    function changeSize() {
+        const form_size = document.getElementById("myRange");
+        console.log(form_size.value);
+        $.ajax({
+            url: '/update_size/', 
+            type: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            data: {
+                'size': form_size.value
+            },
+            success: function(response) {
+                updateDisplay(response.matrix, response.score);
+            }
+        });
+    }
+
+    function testloose() {
+        const form_size = document.getElementById("loose");
+        i = 0;
+        while (form_size.textContent == "you loose" && i < 20) {
+            console.log(form_size.textContent);
+            i++;
+        }   
+    }
+
     // Optional: Add keyboard controls
     document.addEventListener('keydown', function(event) {
         switch(event.key) {
@@ -128,6 +174,9 @@
                 break;
             case 'ArrowRight':
                 moveMatrix('right');
+                break;
+            case 'r':
+                moveRandom();
                 break;
         }
     });

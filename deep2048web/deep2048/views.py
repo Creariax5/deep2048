@@ -19,17 +19,10 @@ def index(request):
 
 def update_matrix(request):
     if request.method == "POST":
-        matrixBefore = deepcopy(matrix)
+        matrix.test_loose()
         direction = request.POST.get('direction')
         matrix.move_inp(direction)
-        if matrix.matrix != matrixBefore.matrix:
-            matrix.player.moves += 1
-            nb = randint(0, 9)
-            if (nb == 0):
-                matrix.set_rnd_empty_case(4)
-            else:
-                matrix.set_rnd_empty_case(2)
-        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
 
 def reset_matrix(request):
     if request.method == "POST":
@@ -41,3 +34,19 @@ def update_rules(request):
         matrix.size = int(request.POST.get('size'))
         matrix.reset()
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+    
+def update_size(request):
+    if request.method == "POST":
+        matrix.size = int(request.POST.get('size'))
+        matrix.reset()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+    
+def test_loose(request):
+    if request.method == "POST":
+        matrix.test_loose()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+    
+def update_random(request):
+    if request.method == "POST":
+        matrix.random_move()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
