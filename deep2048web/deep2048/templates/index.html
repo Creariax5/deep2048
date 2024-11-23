@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+
 <head>
     <meta charset="UTF-8">
     <title>2048</title>
     <link rel="stylesheet" href="{% static '/style.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
     <div class="center">
         <h1>
@@ -20,11 +22,11 @@
         <div id="matrix-container">
             <div class="row">
                 {% for line in matrix %}
-                    <div class="col">
-                        {% for case in line %}
-                            <div class="block">{{ case }}</div>
-                        {% endfor %}
-                    </div>
+                <div class="col">
+                    {% for case in line %}
+                    <div class="block">{{ case }}</div>
+                    {% endfor %}
+                </div>
                 {% endfor %}
             </div>
         </div>
@@ -34,8 +36,8 @@
     </div>
     <div class="form">
         <div class="form">
-          <label for="size">Grid size: </label>
-          <input id="number" type="number" value="4" />
+            <label for="size">Grid size: </label>
+            <input id="number" type="number" value="4" />
         </div>
         <label for="pet-select">Choose a model:</label>
         <select name="model" id="model-select">
@@ -55,11 +57,11 @@
         $.ajax({
             url: '/update/',  // Make sure this matches your urls.py
             type: 'POST',
-            headers: {'X-CSRFToken': csrftoken},
+            headers: { 'X-CSRFToken': csrftoken },
             data: {
                 'direction': direction
             },
-            success: function(response) {
+            success: function (response) {
                 updateDisplay(response.matrix, response.score);
             }
         });
@@ -69,8 +71,8 @@
         $.ajax({
             url: '/reset/',  // Make sure this matches your urls.py
             type: 'POST',
-            headers: {'X-CSRFToken': csrftoken},
-            success: function(response) {
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
                 updateDisplay(response.matrix, response.score);
             }
         });
@@ -81,13 +83,13 @@
         html += '<div class="row">';
         matrix.forEach(line => {
             html += '<div class="col">';
-                line.forEach(cell => {
-                    if (cell < 2) {
-                        html += '<div class="block block"></div>';
-                    } else {
-                        html += '<div class="block block' + cell + '">' + cell + '</div>';
-                    }
-                });
+            line.forEach(cell => {
+                if (cell < 2) {
+                    html += '<div class="block"></div>';
+                } else {
+                    html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
+                }
+            });
             html += '</div>';
         });
         html += '</div>';
@@ -96,8 +98,8 @@
     }
 
     // Optional: Add keyboard controls
-    document.addEventListener('keydown', function(event) {
-        switch(event.key) {
+    document.addEventListener('keydown', function (event) {
+        switch (event.key) {
             case 'ArrowUp':
                 moveMatrix('up');
                 break;
@@ -113,4 +115,5 @@
         }
     });
 </script>
+
 </html>
