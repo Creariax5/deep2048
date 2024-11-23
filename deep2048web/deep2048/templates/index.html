@@ -11,12 +11,15 @@
 
 <body>
     <div class="center">
-        <h1>
-            2048
-        </h1>
-        <h3 id="score">
-            Score: 0
-        </h3>
+        <div>
+            <h1>
+                2048
+            </h1>
+            <h3 id="score">
+                Score: 0
+            </h3>
+        </div>
+        <h2 id="loose"></h2>
     </div>
     <div class="center">
         <div id="matrix-container">
@@ -31,27 +34,42 @@
             </div>
         </div>
     </div>
-    <div class="center">
-        <button onclick="resetMatrix()">Reset</button>
+    <div class="center" id="button-bar">
+        <button onclick="resetMatrix()" id="reset">Reset</button>
     </div>
     <div class="form">
-        <div class="form">
-            <label for="size">Grid size: </label>
-            <input id="number" type="number" value="4" />
+        <div class="slidecontainer">
+            <input onchange="changeSize()" type="range" min="2" max="9" value="4" class="slider" id="myRange">
         </div>
         <label for="pet-select">Choose a model:</label>
         <select name="model" id="model-select">
-            <option value="">--Please choose a model--</option>
             <option value="human">Play myself</option>
             <option value="random">Random</option>
         </select>
         <button onclick="updateRules()">Update</button>
+        <button onclick="testloose()">Test loose</button>
     </div>
 </body>
 {% csrf_token %}
 <script>
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     updateDisplay({{ matrix }}, 0);
+
+
+    var intervalId = window.setInterval(function () {
+        getMatrix()
+    }, 300);
+
+    function getMatrix() {
+        $.ajax({
+            url: '/get/',  // Make sure this matches your urls.py
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score);
+            }
+        });
+    }
 
     function moveMatrix(direction) {
         $.ajax({
@@ -62,7 +80,18 @@
                 'direction': direction
             },
             success: function (response) {
-                updateDisplay(response.matrix, response.score);
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    function moveRandom(direction) {
+        $.ajax({
+            url: '/update_random/',  // Make sure this matches your urls.py
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
             }
         });
     }
@@ -78,14 +107,17 @@
         });
     }
 
-    function updateDisplay(matrix, score) {
+    function updateDisplay(matrix, score, win) {
         let html = '';
         html += '<div class="row">';
+        //console.log(win)
         matrix.forEach(line => {
             html += '<div class="col">';
             line.forEach(cell => {
                 if (cell < 2) {
                     html += '<div class="block"></div>';
+                } else if (cell > 4096) {
+                    html += '<div class="block"><div class="block block4096">' + cell + '</div></div>';
                 } else {
                     html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
                 }
@@ -93,8 +125,76 @@
             html += '</div>';
         });
         html += '</div>';
+        if (win == 0) {
+            $('#loose').html("you loose");
+        } else {
+            $('#loose').html("");
+        }
         $('#matrix-container').html(html);
         $('#score').html("Score " + score);
+    }
+
+    function play() {
+        $.ajax({
+            url: '/play/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score);
+            }
+        });
+    }
+
+    function updateRules() {
+        const form_size = document.getElementById("myRange");
+        const model = document.getElementById("model-select");
+        var buttonBar = document.getElementById("button-bar");
+
+        if (model.value == 'human') {
+            buttonBar.innerHTML = '<button onclick="resetMatrix()" id="reset">Reset</button>';
+        } else {
+            buttonBar.innerHTML = '<button onclick="play()">Play</button>' +
+                '<button onclick="resetMatrix()" id="reset">Reset</button>';
+        }
+
+        console.log(model.value);
+        $.ajax({
+            url: '/update_rules/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            data: {
+                'size': form_size.value,
+                'model': model.value
+            },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score);
+            }
+        });
+    }
+
+    function changeSize() {
+        const form_size = document.getElementById("myRange");
+        console.log(form_size.value);
+        $.ajax({
+            url: '/update_size/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            data: {
+                'size': form_size.value
+            },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score);
+            }
+        });
+    }
+
+    function testloose() {
+        const form_size = document.getElementById("loose");
+        i = 0;
+        while (form_size.textContent == "you loose" && i < 20) {
+            console.log(form_size.textContent);
+            i++;
+        }
     }
 
     // Optional: Add keyboard controls
