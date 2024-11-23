@@ -35,3 +35,9 @@ def reset_matrix(request):
     if request.method == "POST":
         matrix.reset()
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+    
+def update_rules(request):
+    if request.method == "POST":
+        matrix.size = int(request.POST.get('size'))
+        matrix.reset()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})

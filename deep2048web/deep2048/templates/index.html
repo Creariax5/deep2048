@@ -37,6 +37,9 @@
           <label for="size">Grid size: </label>
           <input id="number" type="number" value="4" />
         </div>
+        <div class="slidecontainer">
+            <div class="range-slider" style='--min:0; --max:100; --step:5; --value:75; --text-value:"75";'>
+        </div>
         <label for="pet-select">Choose a model:</label>
         <select name="model" id="model-select">
             <option value="">--Please choose a model--</option>
@@ -93,6 +96,22 @@
         html += '</div>';
         $('#matrix-container').html(html);
         $('#score').html("Score " + score);
+    }
+
+    function updateRules() {
+        const form_size = document.getElementById("number");
+        console.log(form_size.value);
+        $.ajax({
+            url: '/update_rules/', 
+            type: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            data: {
+                'size': form_size.value
+            },
+            success: function(response) {
+                updateDisplay(response.matrix, response.score);
+            }
+        });
     }
 
     // Optional: Add keyboard controls
