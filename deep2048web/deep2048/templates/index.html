@@ -109,6 +109,19 @@
         });
     }
 
+    function updateCSSblock(matrix) {
+        const size = 12 - matrix.length;
+        console.log(size);
+        var divs = Array.from(document.getElementsByClassName('block'));
+        divs.forEach(cell => {
+        cell.style.width = size * 107 / 6 + 'px';
+        cell.style.height = size * 107 / 6 + 'px';
+        cell.style.fontSize = size * 55 / 6 + 'px';
+        cell.style.borderRadius = size * 3 /6 + 'px';
+        cell.style.lineHeight = size * 116.25 /6 + 'px';   
+    });
+    }
+
     function updateDisplay(matrix, score, win) {
         let html = '';
         html += '<div class="row">';
@@ -133,6 +146,7 @@
         }
         $('#matrix-container').html(html);
         $('#score').html("Score " + score);
+        updateCSSblock(matrix);
     }
 
     function play() {
