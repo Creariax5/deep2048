@@ -68,7 +68,7 @@
             type: 'POST',
             headers: { 'X-CSRFToken': csrftoken },
             success: function (response) {
-                updateDisplay(response.matrix, response.score);
+                updateDisplay(response.matrix, response.score, response.win);
             }
         });
     }
@@ -104,7 +104,7 @@
             type: 'POST',
             headers: { 'X-CSRFToken': csrftoken },
             success: function (response) {
-                updateDisplay(response.matrix, response.score);
+                updateDisplay(response.matrix, response.score, response.win);
             }
         });
     }
@@ -112,7 +112,6 @@
     function updateDisplay(matrix, score, win) {
         let html = '';
         html += '<div class="row">';
-        //console.log(win)
         matrix.forEach(line => {
             html += '<div class="col">';
             line.forEach(cell => {
@@ -143,7 +142,7 @@
             type: 'POST',
             headers: { 'X-CSRFToken': csrftoken },
             success: function (response) {
-                updateDisplay(response.matrix, response.score);
+                updateDisplay(response.matrix, response.score, response.win);
             }
         });
     }
@@ -170,7 +169,7 @@
                 'model': model.value
             },
             success: function (response) {
-                updateDisplay(response.matrix, response.score);
+                updateDisplay(response.matrix, response.score, response.win);
             }
         });
     }
@@ -186,18 +185,9 @@
                 'size': form_size.value
             },
             success: function (response) {
-                updateDisplay(response.matrix, response.score);
+                updateDisplay(response.matrix, response.score, response.win);
             }
         });
-    }
-
-    function testloose() {
-        const form_size = document.getElementById("loose");
-        i = 0;
-        while (form_size.textContent == "you loose" && i < 20) {
-            console.log(form_size.textContent);
-            i++;
-        }
     }
 
     // Optional: Add keyboard controls
