@@ -128,6 +128,14 @@
         html += '</div>';
         if (win == 0) {
             $('#loose').html("you loose");
+            playing = false;
+
+            var buttonBar = document.getElementById("button-bar");
+            var pauseBtn = document.getElementById("pause");
+            if (pauseBtn) {
+                buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+                    '<button onclick="resetMatrix()" id="reset">Reset</button>';
+            }
         } else {
             $('#loose').html("");
         }
@@ -135,8 +143,33 @@
         $('#score').html("Score " + score);
     }
 
+    function pause() {
+        playing = false;
+
+        var buttonBar = document.getElementById("button-bar");
+        var pauseBtn = document.getElementById("pause");
+        if (pauseBtn) {
+            buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+                '<button onclick="resetMatrix()" id="reset">Reset</button>';
+        }
+
+        $.ajax({
+            url: '/pause/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
     function play() {
         playing = true;
+
+        var buttonBar = document.getElementById("button-bar");
+        buttonBar.innerHTML = '<button onclick="pause()" id="pause">Pause</button>' +
+            '<button onclick="resetMatrix()" id="reset">Reset</button>';
+
         $.ajax({
             url: '/play/',
             type: 'POST',
@@ -155,7 +188,7 @@
         if (model.value == 'human') {
             buttonBar.innerHTML = '<button onclick="resetMatrix()" id="reset">Reset</button>';
         } else {
-            buttonBar.innerHTML = '<button onclick="play()">Play</button>' +
+            buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
                 '<button onclick="resetMatrix()" id="reset">Reset</button>';
         }
 
