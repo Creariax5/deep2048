@@ -9,7 +9,7 @@ button {
     color: #a88615;
     cursor: pointer;
     display: flex;
-    font-family: ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-family: ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 1rem;
     font-weight: 700;
     line-height: 1.5;
@@ -18,22 +18,22 @@ button {
     outline: 0;
     border: 0;
     padding: 1rem;
-  }
-  
-  button:before {
+}
+
+button:before {
     background-color: #a88615;
     content: "";
     display: inline-block;
     height: 1px;
     margin-right: 10px;
-    transition: all .42s cubic-bezier(.25,.8,.25,1);
+    transition: all .42s cubic-bezier(.25, .8, .25, 1);
     width: 0;
-  }
-  
-  button:hover:before {
+}
+
+button:hover:before {
     background-color: #a88615;
     width: 3rem;
-  }
+}
 
 .center {
     display: flex;
@@ -68,7 +68,6 @@ button {
 
 .block4 {
     background: #ede0c8;
-    ;
 }
 
 .block8 {
@@ -109,31 +108,26 @@ button {
 .block1024 {
     background: #EDC53F;
     color: #f9f6f2;
-    font-size: 40px;
 }
 
 .block2048 {
     background: #EDC22E;
     color: #f9f6f2;
-    font-size: 40px;
 }
 
 .block4096 {
     background: #3C3A32;
     color: #f9f6f2;
-    font-size: 40px;
 }
 
 .block8192 {
     background: #3C3A32;
     color: #f9f6f2;
-    font-size: 40px;
 }
 
 .blockBig {
     background: #3C3A32;
     color: #f9f6f2;
-    font-size: 25px;
 }
 
 #matrix-container {
