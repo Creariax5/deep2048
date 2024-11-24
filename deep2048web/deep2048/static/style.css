@@ -82,16 +82,31 @@ body {
 .block1024 {
     background: #EDC53F;
     color: #f9f6f2;
+    font-size: 40px;
 }
 
 .block2048 {
     background: #EDC22E;
     color: #f9f6f2;
+    font-size: 40px;
 }
 
 .block4096 {
     background: #3C3A32;
     color: #f9f6f2;
+    font-size: 40px;
+}
+
+.block8192 {
+    background: #3C3A32;
+    color: #f9f6f2;
+    font-size: 40px;
+}
+
+.blockBig {
+    background: #3C3A32;
+    color: #f9f6f2;
+    font-size: 25px;
 }
 
 #matrix-container {

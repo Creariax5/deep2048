@@ -54,11 +54,13 @@
 <script>
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     updateDisplay({{ matrix }}, 0);
-
+    let playing = false;
 
     var intervalId = window.setInterval(function () {
-        getMatrix()
-    }, 300);
+        if (playing) {
+            getMatrix()
+        }
+    }, 100);
 
     function getMatrix() {
         $.ajax({
@@ -117,7 +119,7 @@
                 if (cell < 2) {
                     html += '<div class="block"></div>';
                 } else if (cell > 4096) {
-                    html += '<div class="block"><div class="block block4096">' + cell + '</div></div>';
+                    html += '<div class="block"><div class="block blockBig">' + cell + '</div></div>';
                 } else {
                     html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
                 }
@@ -135,6 +137,7 @@
     }
 
     function play() {
+        playing = true;
         $.ajax({
             url: '/play/',
             type: 'POST',
