@@ -9,6 +9,7 @@ class Matrix:
         self.matrix = []
         self.player = Player(name, model)
         self.win = win
+        self.playing = False
         self.create()
 
     def create(self):

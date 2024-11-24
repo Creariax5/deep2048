@@ -19,6 +19,7 @@ def index(request):
 
 def get_matrix(request):
     if request.method == "POST":
+        matrix.playing = matrix.test_loose()
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
 
 def update_matrix(request):
@@ -49,7 +50,7 @@ def update_size(request):
     
 def test_loose(request):
     if request.method == "POST":
-        matrix.test_loose()
+        playing = matrix.test_loose()
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
     
 def update_random(request):
@@ -59,12 +60,14 @@ def update_random(request):
 
 def play(request):
     if request.method == "POST":
+        matrix.playing = True
         matrix.reset()
-        i = 0
-        j = matrix.test_loose()
-        while j:
+        while matrix.playing:
             matrix.random_move()
-            if i % 100 == 0:
-                j = matrix.test_loose()
-            i = i + 1
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+
+def pause(request):
+    if request.method == "POST":
+        matrix.playing = False
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+
