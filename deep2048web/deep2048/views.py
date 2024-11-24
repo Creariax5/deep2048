@@ -60,6 +60,11 @@ def update_random(request):
 def play(request):
     if request.method == "POST":
         matrix.reset()
-        while matrix.test_loose():
+        i = 0
+        j = matrix.test_loose()
+        while j:
             matrix.random_move()
+            if i % 100 == 0:
+                j = matrix.test_loose()
+            i = i + 1
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
