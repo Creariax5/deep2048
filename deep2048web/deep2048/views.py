@@ -19,7 +19,7 @@ def index(request):
 
 def get_matrix(request):
     if request.method == "POST":
-        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
 
 def update_matrix(request):
     if request.method == "POST":
@@ -31,7 +31,7 @@ def update_matrix(request):
 def reset_matrix(request):
     if request.method == "POST":
         matrix.reset()
-        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
     
 def update_rules(request):
     if request.method == "POST":
@@ -39,18 +39,18 @@ def update_rules(request):
         print(request.POST.get('model'))
         #matrix.set_model(request.POST.get('model'))
         matrix.reset()
-        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
     
 def update_size(request):
     if request.method == "POST":
         matrix.size = int(request.POST.get('size'))
         matrix.reset()
-        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
     
 def test_loose(request):
     if request.method == "POST":
         matrix.test_loose()
-        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
     
 def update_random(request):
     if request.method == "POST":
