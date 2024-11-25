@@ -4,7 +4,7 @@ class Perceptron1957:
         self.w2 = w2
         self.learning_rate = 0.01
     
-    def run(self, x1, x2):
+    def forward_propagation(self, x1, x2):
         y = x1 * self.w1 + x2 * self.w2
         return self.activation(y)
 
