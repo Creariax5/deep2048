@@ -1,12 +1,15 @@
 from random import randint
 from .vector import Vector
-from .player import Player
+from .player import Player, Model
+from copy import deepcopy
 
 class Matrix:
-    def __init__(self, name, size=6):
+    def __init__(self, name, model=Model.HUMAN, size=4, win = 1):
         self.size = size
         self.matrix = []
-        self.player = Player(name)
+        self.player = Player(name, model)
+        self.win = win
+        self.playing = False
         self.create()
 
     def create(self):
@@ -18,10 +21,11 @@ class Matrix:
             self.matrix.append(tmp)
     
     def reset(self):
+        self.win = 1
         self.create()
         self.set_rnd_empty_case(2)
         self.set_rnd_empty_case(2)
-        self.player = Player(self.player.name)
+        self.player = Player(self.player.name, self.player.model)
 
     def display(self):
         for i in range(self.size):
@@ -66,9 +70,11 @@ class Matrix:
                     self.player.score += self.matrix[i - 1][j]
 
     def move_up(self):
+        matrixBefore = deepcopy(self)
         self.go_up()
         self.merge_up()
         self.go_up()
+        self.new_case(matrixBefore)
 
     def go_down(self):
         for i in range(self.size - 1, -1, -1):
@@ -90,9 +96,11 @@ class Matrix:
                     self.player.score += self.matrix[i + 1][j]
 
     def move_down(self):
+        matrixBefore = deepcopy(self)
         self.go_down()
         self.merge_down()
         self.go_down()
+        self.new_case(matrixBefore)
 
     def go_left(self):
         for i in range(self.size):
@@ -114,9 +122,11 @@ class Matrix:
                     self.player.score += self.matrix[i][j - 1]
 
     def move_left(self):
+        matrixBefore = deepcopy(self)
         self.go_left()
         self.merge_left()
         self.go_left()
+        self.new_case(matrixBefore)
 
     def go_right(self):
         for i in range(self.size - 1, -1, -1):
@@ -138,9 +148,47 @@ class Matrix:
                     self.player.score += self.matrix[i][j + 1]
 
     def move_right(self):
+        matrixBefore = deepcopy(self)
         self.go_right()
         self.merge_right()
         self.go_right()
+        self.new_case(matrixBefore)
+
+    def new_case(self, matrixBefore):
+        if self.matrix != matrixBefore.matrix:
+            self.player.moves += 1
+            nb = randint(0, 9)
+            if (nb == 0):
+                self.set_rnd_empty_case(4)
+            else:
+                self.set_rnd_empty_case(2)
+    
+    def test_loose(self):
+        new_mat = deepcopy(self)
+        new_mat.move_up()
+        #print("up", new_mat.matrix)
+        new_mat.move_down()
+        #print("d", new_mat.matrix)
+        new_mat.move_left()
+        #print("l", new_mat.matrix)
+        new_mat.move_right()
+        #print("r", new_mat.matrix)
+        if new_mat.matrix == self.matrix:
+            #print(new_mat.matrix, self.matrix)
+            self.win = 0
+            return 0
+        return 1
+
+    def random_move(self):
+        nb = randint(0,3)
+        if nb == 0:
+            self.move_up()
+        if nb == 1:
+            self.move_left()
+        if nb == 2:
+            self.move_down()
+        if nb == 3:
+            self.move_right()
 
     def move_inp(self, direction):
         if direction == "up":
