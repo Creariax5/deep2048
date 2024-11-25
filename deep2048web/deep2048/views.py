@@ -17,21 +17,57 @@ def index(request):
     }
     return render(request, "index.html", context)
 
+def get_matrix(request):
+    if request.method == "POST":
+        matrix.playing = matrix.test_loose()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+
 def update_matrix(request):
     if request.method == "POST":
-        matrixBefore = deepcopy(matrix)
+        matrix.test_loose()
         direction = request.POST.get('direction')
         matrix.move_inp(direction)
-        if matrix.matrix != matrixBefore.matrix:
-            matrix.player.moves += 1
-            nb = randint(0, 9)
-            if (nb == 0):
-                matrix.set_rnd_empty_case(4)
-            else:
-                matrix.set_rnd_empty_case(2)
-        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
 
 def reset_matrix(request):
     if request.method == "POST":
         matrix.reset()
-        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+    
+def update_rules(request):
+    if request.method == "POST":
+        matrix.size = int(request.POST.get('size'))
+        print(request.POST.get('model'))
+        #matrix.set_model(request.POST.get('model'))
+        matrix.reset()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+    
+def update_size(request):
+    if request.method == "POST":
+        matrix.size = int(request.POST.get('size'))
+        matrix.reset()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+    
+def test_loose(request):
+    if request.method == "POST":
+        playing = matrix.test_loose()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+    
+def update_random(request):
+    if request.method == "POST":
+        matrix.random_move()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+
+def play(request):
+    if request.method == "POST":
+        matrix.playing = True
+        matrix.reset()
+        while matrix.playing:
+            matrix.random_move()
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+
+def pause(request):
+    if request.method == "POST":
+        matrix.playing = False
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+

@@ -1,66 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+
 <head>
     <meta charset="UTF-8">
     <title>2048</title>
     <link rel="stylesheet" href="{% static '/style.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
     <div class="center">
-        <h1>
-            2048
-        </h1>
-        <h3 id="score">
-            Score: 0
-        </h3>
+        <div>
+            <h1>
+                2048
+            </h1>
+            <h3 id="score">
+                Score: 0
+            </h3>
+        </div>
+        <h2 id="loose"></h2>
     </div>
     <div class="center">
         <div id="matrix-container">
             <div class="row">
                 {% for line in matrix %}
-                    <div class="col">
-                        {% for case in line %}
-                            <div class="block">{{ case }}</div>
-                        {% endfor %}
-                    </div>
+                <div class="col">
+                    {% for case in line %}
+                    <div class="block">{{ case }}</div>
+                    {% endfor %}
+                </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-    <div class="center">
-        <button onclick="resetMatrix()">Reset</button>
+    <div class="center" id="button-bar">
+        <button onclick="resetMatrix()" id="reset">Reset</button>
     </div>
     <div class="form">
-        <div class="form">
-          <label for="size">Grid size: </label>
-          <input id="number" type="number" value="4" />
+        <div class="slidecontainer">
+            <input onchange="changeSize()" type="range" min="2" max="9" value="4" class="slider" id="myRange">
         </div>
         <label for="pet-select">Choose a model:</label>
         <select name="model" id="model-select">
-            <option value="">--Please choose a model--</option>
             <option value="human">Play myself</option>
             <option value="random">Random</option>
         </select>
         <button onclick="updateRules()">Update</button>
+        <button onclick="testloose()">Test loose</button>
     </div>
 </body>
 {% csrf_token %}
 <script>
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     updateDisplay({{ matrix }}, 0);
+    let playing = false;
+
+    var intervalId = window.setInterval(function () {
+        if (playing) {
+            getMatrix()
+        }
+    }, 100);
+
+    function getMatrix() {
+        $.ajax({
+            url: '/get/',  // Make sure this matches your urls.py
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
 
     function moveMatrix(direction) {
         $.ajax({
             url: '/update/',  // Make sure this matches your urls.py
             type: 'POST',
-            headers: {'X-CSRFToken': csrftoken},
+            headers: { 'X-CSRFToken': csrftoken },
             data: {
                 'direction': direction
             },
-            success: function(response) {
-                updateDisplay(response.matrix, response.score);
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    function moveRandom(direction) {
+        $.ajax({
+            url: '/update_random/',  // Make sure this matches your urls.py
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
             }
         });
     }
@@ -69,35 +102,147 @@
         $.ajax({
             url: '/reset/',  // Make sure this matches your urls.py
             type: 'POST',
-            headers: {'X-CSRFToken': csrftoken},
-            success: function(response) {
-                updateDisplay(response.matrix, response.score);
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
             }
         });
     }
 
-    function updateDisplay(matrix, score) {
+    function updateCSSblock(matrix) {
+        const size = (12 - matrix.length);
+        let cellValue = 1;
+        //console.log(size);
+        var divs = Array.from(document.getElementsByClassName('block'));
+        divs.forEach(cell => {
+            let cellValue = cell.textContent || '1';
+            let valueLength = cellValue.toString().length + 3;
+
+            cell.style.width = size * 107 / 6 + 'px';
+            cell.style.height = size * 107 / 6 + 'px';
+            cell.style.fontSize = (size * 55 / 6) / (valueLength * 0.25) + 'px';
+            cell.style.borderRadius = size * 3 / 6 + 'px';
+            cell.style.lineHeight = size * 116.25 / 6 + 'px';
+        });
+    }
+
+    function updateDisplay(matrix, score, win) {
         let html = '';
         html += '<div class="row">';
         matrix.forEach(line => {
             html += '<div class="col">';
-                line.forEach(cell => {
-                    if (cell < 2) {
-                        html += '<div class="block block"></div>';
-                    } else {
-                        html += '<div class="block block' + cell + '">' + cell + '</div>';
-                    }
-                });
+            line.forEach(cell => {
+                if (cell < 2) {
+                    html += '<div class="block"></div>';
+                } else if (cell > 4096) {
+                    html += '<div class="block"><div class="block blockBig">' + cell + '</div></div>';
+                } else {
+                    html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
+                }
+            });
             html += '</div>';
         });
         html += '</div>';
+        if (win == 0) {
+            $('#loose').html("you loose");
+            playing = false;
+
+            var buttonBar = document.getElementById("button-bar");
+            var pauseBtn = document.getElementById("pause");
+            if (pauseBtn) {
+                buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+                    '<button onclick="resetMatrix()" id="reset">Reset</button>';
+            }
+        } else {
+            $('#loose').html("");
+        }
         $('#matrix-container').html(html);
         $('#score').html("Score " + score);
+        updateCSSblock(matrix);
     }
 
-    // Optional: Add keyboard controls
-    document.addEventListener('keydown', function(event) {
-        switch(event.key) {
+    function pause() {
+        playing = false;
+
+        var buttonBar = document.getElementById("button-bar");
+        var pauseBtn = document.getElementById("pause");
+        if (pauseBtn) {
+            buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+                '<button onclick="resetMatrix()" id="reset">Reset</button>';
+        }
+
+        $.ajax({
+            url: '/pause/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    function play() {
+        playing = true;
+
+        var buttonBar = document.getElementById("button-bar");
+        buttonBar.innerHTML = '<button onclick="pause()" id="pause">Pause</button>' +
+            '<button onclick="resetMatrix()" id="reset">Reset</button>';
+
+        $.ajax({
+            url: '/play/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    function updateRules() {
+        const form_size = document.getElementById("myRange");
+        const model = document.getElementById("model-select");
+        var buttonBar = document.getElementById("button-bar");
+
+        if (model.value == 'human') {
+            buttonBar.innerHTML = '<button onclick="resetMatrix()" id="reset">Reset</button>';
+        } else {
+            buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+                '<button onclick="resetMatrix()" id="reset">Reset</button>';
+        }
+
+        console.log(model.value);
+        $.ajax({
+            url: '/update_rules/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            data: {
+                'size': form_size.value,
+                'model': model.value
+            },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    function changeSize() {
+        const form_size = document.getElementById("myRange");
+        console.log(form_size.value);
+        $.ajax({
+            url: '/update_size/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            data: {
+                'size': form_size.value
+            },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    document.addEventListener('keydown', function (event) {
+        switch (event.key) {
             case 'ArrowUp':
                 moveMatrix('up');
                 break;
@@ -113,4 +258,5 @@
         }
     });
 </script>
+
 </html>
