@@ -1,3 +1,4 @@
+import random
 import numpy as np # linear algebra
 import pandas as pd # data processing
 import matplotlib.pyplot as plt
@@ -8,7 +9,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(_
 sys.path.append(project_root)
 
 from IAtests.visuData import visualizing as visu
-from IAtests.perceptron.perceptron1957 import Perceptron1957
+from perceptronSimple import PerceptronSimple
 
 # Reading the data
 iris = pd.read_csv('../dataset/Iris.csv')
@@ -30,24 +31,26 @@ iris['Species'] = iris['Species'].map(species_map)
 visu.plot_data(iris)
 
 
-def train(iris, neurone: Perceptron1957):
+def train(iris, neuron: PerceptronSimple):
     train_set = iris.iloc[:-9]
 
     for i in range(len(train_set)):
         row = train_set.iloc[i]
         x, y, type = row.values[:3]
-        retunVal = neurone.forward_propagation(x, y)
-        neurone.learning(x, y, retunVal, type)
-    return neurone
+        returnVal = neuron.forward_propagation([x, y])
+        neuron.minimization([x, y], returnVal, type)
+    return neuron
 
 def evaluate(test_set, neurone):
     correct = 0
+    threshold = 0.5
 
     for i in range(len(test_set)):
         row = test_set.iloc[i]
         x, y, type = row.values[:3]
-        retunVal = neurone.forward_propagation(x, y)
-        if retunVal == type:
+        returnVal = neurone.forward_propagation([x, y])
+        predicted = 1 if returnVal >= threshold else 0
+        if predicted == type:
             correct += 1
 
     accuracy = correct / len(test_set)
@@ -87,5 +90,14 @@ def get_dataset():
 
 #learning_rate_test(10, 40, 0.8)
 
-#neurone = Perceptron1957()
-#learning_speed_test(0.01, neurone)
+def create_single_neuron(inp):
+        w = []
+        for i in range(inp):
+            w.append(random.randint(-1, 1))
+        b = random.randint(-1, 1)
+        neuron = PerceptronSimple(w, b)
+        return neuron
+
+neuron = create_single_neuron(2)
+
+#learning_speed_test(neuron, 0.01)
