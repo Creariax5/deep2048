@@ -69,11 +69,6 @@ def learning_speed_test(neurone, learning_rate, MAX_ITER=100):
             accuracy = last_accuracy
             print(f"Accuracy: {accuracy:.2%} in ", i)
         i += 1
-        test_set = iris.iloc[-9:]
-    accuracy = evaluate(test_set, neurone)
-    print(f"Accuracy on unknow data: {accuracy:.2%}")
-            
-
     return neurone
         
 def learning_rate_test(begin, laps, multi):
@@ -88,16 +83,4 @@ def learning_rate_test(begin, laps, multi):
 def get_dataset():
     return iris
 
-#learning_rate_test(10, 40, 0.8)
-
-def create_single_neuron(inp):
-        w = []
-        for i in range(inp):
-            w.append(random.randint(-1, 1))
-        b = random.randint(-1, 1)
-        neuron = PerceptronSimple(w, b)
-        return neuron
-
-neuron = create_single_neuron(2)
-
-#learning_speed_test(neuron, 0.01)
+neuron = PerceptronSimple(2)

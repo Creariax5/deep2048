@@ -34,3 +34,10 @@ def learning(self, x1, x2, predicted, target):
 - Erreur Logistique ([[Cost Function]])
 - Maximum de Vraisemblance
 - [[Descente de Gradient]]
+
+## Comment je l'ai codé:
+- [[fonction d'Activation]]:
+```python
+def activation(self, x):
+	return 1 / (1 + math.exp(-x))
+```
