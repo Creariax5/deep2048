@@ -9,12 +9,12 @@ sys.path.append(project_root)
 
 
 def show(src, reseau, X, Y):
-    size = 2
+    size = 3
     zoom = 1
-    startX = -2 * size
-    startY = -2 * size
-    width = 4 * size
-    height = 4 * size
+    startX = -1 * size
+    startY = -1 * size
+    width = 2 * size
+    height = 2 * size
     multi = 20 * zoom
     increment = 0.050 / zoom
     threshold = 0.5

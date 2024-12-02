@@ -74,10 +74,10 @@ class NetworkMatrix:
         for i in tqdm(range(nb_iter)):
             activations = self.forward_propagation(X)
             Loss.append(self.log_loss(activations[-1], y))
-            if i % 5 == 0:
-                a = self.get_accuracy(activations[-1], y)
+            a = self.get_accuracy(activations[-1], y)
+            if i % 10 == 0:
                 print(a, "%")
-                #show("newData.png", self, X, y)
+                # show("newData.png", self, X, y)
             Accuracy.append(a)
             gradients = self.back_propagation(activations, X, y)
             self.minimization(gradients)

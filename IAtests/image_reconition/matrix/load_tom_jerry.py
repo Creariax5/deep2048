@@ -130,17 +130,6 @@ def lists_to_numpy_arrays(X, y):
     y = np.array(y).reshape(-1, 1)
     return X, y
 
-# Load the images
-X, y = load_images()
-X, y = lists_to_numpy_arrays(X, y)
-# X1, y1 = load_test_images()
-# X1, y1 = lists_to_numpy_arrays(X1, y1)
-
-# Print dataset information
-print(f"Dataset shape: {X.shape}")
-print(f"Number of Tom images: {np.sum(y == 0)}")
-print(f"Number of Jerry images: {np.sum(y == 1)}")
-
 def split_data(X, y, train_percentage=0.9):
     # Generate random indices for splitting
     indices = np.random.permutation(len(X))
@@ -156,8 +145,19 @@ def split_data(X, y, train_percentage=0.9):
     
     return train_data, test_data, train_labels, test_labels
 
+# Load the images
+X, y = load_images()
+X, y = lists_to_numpy_arrays(X, y)
+# X1, y1 = load_test_images()
+# X1, y1 = lists_to_numpy_arrays(X1, y1)
+
+# Print dataset information
+print(f"Dataset shape: {X.shape}")
+print(f"Number of Tom images: {np.sum(y == 0)}")
+print(f"Number of Jerry images: {np.sum(y == 1)}")
+
 # Usage in your code:
-width = 128
+width = 2048
 length = 16
 
 train_data, test_data, train_labels, test_labels = split_data(X, y, 0.9)
