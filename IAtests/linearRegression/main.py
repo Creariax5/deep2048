@@ -3,6 +3,7 @@ import numpy as np # linear algebra
 import pandas as pd # data processing
 import matplotlib.pyplot as plt
 
+
 import sys
 import os
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -18,27 +19,18 @@ iris = pd.read_csv('../dataset/Iris.csv')
 iris.drop('Id', axis=1, inplace=True)
 iris.drop('SepalLengthCm', axis=1, inplace=True)
 iris.drop('SepalWidthCm', axis=1, inplace=True)
-
-species_map = {
-    'Iris-setosa': 0,
-    'Iris-versicolor': 1,
-    'Iris-virginica': 1
-}
-
-# Replace values using map
-iris['Species'] = iris['Species'].map(species_map)
+iris.drop('Species', axis=1, inplace=True)
 
 visu.plot_data(iris)
-
 
 def train(iris, neuron: PerceptronSimple):
     train_set = iris.iloc[:-9]
 
     for i in range(len(train_set)):
         row = train_set.iloc[i]
-        x, y, type = row.values[:3]
-        returnVal = neuron.forward_propagation([x, y])
-        neuron.minimization([x, y], returnVal, type)
+        x, y = row.values[:2]
+        returnVal = neuron.forward_propagation([x])
+        neuron.minimization([x], returnVal, y)
     return neuron
 
 def evaluate(test_set, neurone):
@@ -47,10 +39,10 @@ def evaluate(test_set, neurone):
 
     for i in range(len(test_set)):
         row = test_set.iloc[i]
-        x, y, type = row.values[:3]
-        returnVal = neurone.forward_propagation([x, y])
+        x, y = row.values[:2]
+        returnVal = neurone.forward_propagation([x])
         predicted = 1 if returnVal >= threshold else 0
-        if predicted == type:
+        if predicted == y:
             correct += 1
 
     accuracy = correct / len(test_set)
@@ -64,19 +56,10 @@ def learning_speed_test(neurone, learning_rate, MAX_ITER=100):
 
     while accuracy <= 1 and MAX_ITER != i:
         neurone = train(iris, neurone)
-        last_accuracy = evaluate(iris, neurone)
-        if accuracy != last_accuracy:
-            accuracy = last_accuracy
-            print(f"Accuracy: {accuracy:.2%} in ", i)
+        if i%20 == 0:
+            # show('test.png', neurone)
+            pass
         i += 1
-<<<<<<< HEAD
-        test_set = iris.iloc[-9:]
-    accuracy = evaluate(test_set, neurone)
-    print(f"Accuracy on unknow data: {accuracy:.2%}")
-            
-
-=======
->>>>>>> b96ec48a0387761af555a9dc5c1398a2b10a6cb5
     return neurone
         
 def learning_rate_test(begin, laps, multi):
@@ -91,20 +74,3 @@ def learning_rate_test(begin, laps, multi):
 def get_dataset():
     return iris
 
-<<<<<<< HEAD
-#learning_rate_test(10, 40, 0.8)
-
-def create_single_neuron(inp):
-        w = []
-        for i in range(inp):
-            w.append(random.randint(-1, 1))
-        b = random.randint(-1, 1)
-        neuron = PerceptronSimple(w, b)
-        return neuron
-
-neuron = create_single_neuron(2)
-
-#learning_speed_test(neuron, 0.01)
-=======
-neuron = PerceptronSimple(2)
->>>>>>> b96ec48a0387761af555a9dc5c1398a2b10a6cb5

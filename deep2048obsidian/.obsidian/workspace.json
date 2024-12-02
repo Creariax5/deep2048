@@ -87,7 +87,12 @@
               "title": "forward_propagation"
             }
           }
+<<<<<<< HEAD
         ]
+=======
+        ],
+        "currentTab": 1
+>>>>>>> b96ec48a0387761af555a9dc5c1398a2b10a6cb5
       }
     ],
     "direction": "vertical"
@@ -224,7 +229,11 @@
       "command-palette:Open command palette": false
     }
   },
+<<<<<<< HEAD
   "active": "96d1e8049c792863",
+=======
+  "active": "8d484311d6911cb4",
+>>>>>>> b96ec48a0387761af555a9dc5c1398a2b10a6cb5
   "lastOpenFiles": [
     "Perceptron.md",
     "function de Minimisation.md",
