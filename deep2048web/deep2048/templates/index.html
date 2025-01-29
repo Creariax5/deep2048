@@ -38,10 +38,15 @@
         <button onclick="resetMatrix()" id="reset">Reset</button>
     </div>
     <div class="form">
-        <div class="slidecontainer">
+        <div class="range-slider">
             <input onchange="changeSize()" type="range" min="2" max="9" value="4" class="slider" id="myRange">
+            <span class="range-value">50</span>
         </div>
         <label for="pet-select">Choose a model:</label>
+        <div>
+            <button class='click' onclick="updateRules()">Update</button>
+            <button class='no_click' onclick="testloose()">Test loose</button>
+        </div>
         <select name="model" id="model-select">
             <option value="human">Play myself</option>
             <option value="random">Random</option>
@@ -52,6 +57,26 @@
 </body>
 {% csrf_token %}
 <script>
+
+    $(document).ready(function(){
+        var rangeSlider = function(){
+            var slider = $('.range-slider'),
+                range = $('.range-slider input[type="range"]'),
+                value = $('.range-value');
+            slider.each(function(){
+                value.each(function(){
+                    var value = $(this).prev().attr('value');
+                    var max = $(this).prev().attr('max');
+                    $(this).html(value);
+                });
+                range.on('input', function(){
+                    $(this).next(value).html(this.value);
+                });
+            });
+        };
+        rangeSlider();
+    });
+
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     updateDisplay({{ matrix }}, 0);
     let playing = false;
