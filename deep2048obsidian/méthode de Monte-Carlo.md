@@ -1,0 +1,1 @@
+Une **méthode de Monte-Carlo**, ou **méthode Monte-Carlo**, est une méthode [algorithmique](https://fr.wikipedia.org/wiki/Algorithmique) visant à calculer une valeur numérique approchée en utilisant des [procédés aléatoires](https://fr.wikipedia.org/wiki/Processus_stochastique "Processus stochastique"), c'est-à-dire des techniques probabilistes.

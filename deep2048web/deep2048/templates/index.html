@@ -135,16 +135,20 @@
     }
 
     function updateCSSblock(matrix) {
-        const size = 12 - matrix.length;
-        console.log(size);
+        const size = (12 - matrix.length);
+        let cellValue = 1;
+        //console.log(size);
         var divs = Array.from(document.getElementsByClassName('block'));
         divs.forEach(cell => {
-        cell.style.width = size * 107 / 6 + 'px';
-        cell.style.height = size * 107 / 6 + 'px';
-        cell.style.fontSize = size * 55 / 6 + 'px';
-        cell.style.borderRadius = size * 3 /6 + 'px';
-        cell.style.lineHeight = size * 116.25 /6 + 'px';   
-    });
+            let cellValue = cell.textContent || '1';
+            let valueLength = cellValue.toString().length + 3;
+
+            cell.style.width = size * 107 / 6 + 'px';
+            cell.style.height = size * 107 / 6 + 'px';
+            cell.style.fontSize = (size * 55 / 6) / (valueLength * 0.25) + 'px';
+            cell.style.borderRadius = size * 3 / 6 + 'px';
+            cell.style.lineHeight = size * 116.25 / 6 + 'px';
+        });
     }
 
     function updateDisplay(matrix, score, win) {
@@ -262,7 +266,6 @@
         });
     }
 
-    // Optional: Add keyboard controls
     document.addEventListener('keydown', function (event) {
         switch (event.key) {
             case 'ArrowUp':
