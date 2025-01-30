@@ -101,7 +101,7 @@
                 'direction': direction
             },
             success: function (response) {
-                updateDisplay(response.matrix, response.score, response.win);
+                updateHumanDisplay(response.matrix, response.score, response.win);
             }
         });
     }
@@ -145,43 +145,74 @@
         });
     }
 
-    function updateDisplay(matrix, score, win) {
-        if (false) {
-            return;
-        } else {
-            let html = '';
-            html += '<div class="row">';
-            matrix.forEach(line => {
-                html += '<div class="col">';
-                line.forEach(cell => {
-                    if (cell < 2) {
-                        html += '<div class="block"></div>';
-                    } else if (cell > 4096) {
-                        html += '<div class="block"><div class="block blockBig">' + cell + '</div></div>';
-                    } else {
-                        html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
-                    }
-                });
-                html += '</div>';
+    function updateHumanDisplay(matrix, score, win) {
+        let html = '';
+        html += '<div class="row">';
+        matrix.forEach(line => {
+            html += '<div class="col">';
+            line.forEach(cell => {
+                if (cell < 2) {
+                    html += '<div class="block"></div>';
+                } else if (cell > 4096) {
+                    html += '<div class="block"><div class="block blockBig">' + cell + '</div></div>';
+                } else {
+                    html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
+                }
             });
             html += '</div>';
-            if (win == 0) {
-                $('#loose').html("you loose");
-                playing = false;
+        });
+        html += '</div>';
+        if (win == 0) {
+            $('#loose').html("you loose");
+            playing = false;
 
-                var buttonBar = document.getElementById("button-bar");
-                var pauseBtn = document.getElementById("pause");
-                if (pauseBtn) {
-                    buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
-                        '<button onclick="resetMatrix()" id="reset">Reset</button>';
-                }
-            } else {
-                $('#loose').html("");
+            var buttonBar = document.getElementById("button-bar");
+            var pauseBtn = document.getElementById("pause");
+            if (pauseBtn) {
+                buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+                    '<button onclick="resetMatrix()" id="reset">Reset</button>';
             }
-            $('#matrix-container').html(html);
-            $('#score').html("Score " + score);
-            updateCSSblock(matrix);
+        } else {
+            $('#loose').html("");
         }
+        $('#matrix-container').html(html);
+        $('#score').html("Score " + score);
+        updateCSSblock(matrix);
+    }
+
+    function updateDisplay(matrix, score, win) {
+        let html = '';
+        html += '<div class="row">';
+        matrix.forEach(line => {
+            html += '<div class="col">';
+            line.forEach(cell => {
+                if (cell < 2) {
+                    html += '<div class="block"></div>';
+                } else if (cell > 4096) {
+                    html += '<div class="block"><div class="block blockBig">' + cell + '</div></div>';
+                } else {
+                    html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
+                }
+            });
+            html += '</div>';
+        });
+        html += '</div>';
+        if (win == 0) {
+            $('#loose').html("you loose");
+            playing = false;
+
+            var buttonBar = document.getElementById("button-bar");
+            var pauseBtn = document.getElementById("pause");
+            if (pauseBtn) {
+                buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+                    '<button onclick="resetMatrix()" id="reset">Reset</button>';
+            }
+        } else {
+            $('#loose').html("");
+        }
+        $('#matrix-container').html(html);
+        $('#score').html("Score " + score);
+        updateCSSblock(matrix);
     }
 
     function pause() {
@@ -280,19 +311,21 @@
     }
 
     function handleMouseDown(event) {
-        switch (event.key) {
-            case 'ArrowUp':
-                moveMatrix('up');
-                break;
-            case 'ArrowDown':
-                moveMatrix('down');
-                break;
-            case 'ArrowLeft':
-                moveMatrix('left');
-                break;
-            case 'ArrowRight':
-                moveMatrix('right');
-                break;
+        if (isHuman) {
+            switch (event.key) {
+                case 'ArrowUp':
+                    moveMatrix('up');
+                    break;
+                case 'ArrowDown':
+                    moveMatrix('down');
+                    break;
+                case 'ArrowLeft':
+                    moveMatrix('left');
+                    break;
+                case 'ArrowRight':
+                    moveMatrix('right');
+                    break;
+            }
         }
     }
     document.addEventListener('keydown', handleMouseDown);
