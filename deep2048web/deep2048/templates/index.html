@@ -71,8 +71,10 @@
     });
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    document.addEventListener("contextmenu", (event) => event.preventDefault());
     let playing = false;
     let isHuman = true;
+    let startX, startY, endX, endY;
 
     function setRandom() {
         const form_size = document.getElementById("myRange");
@@ -333,6 +335,39 @@
             }
         }
     }
-</script>
+
+    function dragMove(vectorX, vectorY) {
+        if (Math.abs(vectorY) < 50 && Math.abs(vectorX) < 50)
+            return;
+        if (Math.abs(vectorX) > Math.abs(vectorY)) {
+            if (vectorX > 0) {
+                moveMatrix('right');
+            } else {
+                moveMatrix('left');
+            }
+        } else {
+            if (vectorY > 0) {
+                moveMatrix('down');
+            } else {
+                moveMatrix('up');
+            }
+        }
+    }
+
+    document.addEventListener("mousedown", (event) => {
+        startX = event.clientX;
+        startY = event.clientY;
+    });
+
+    document.addEventListener("mouseup", (event) => {
+        endX = event.clientX;
+        endY = event.clientY;
+
+        let vectorX = endX - startX;
+        let vectorY = endY - startY;
+
+        dragMove(vectorX, vectorY);
+    });
+    </script>
 
 </html>
