@@ -70,8 +70,24 @@ input[type="range"] {
     }
 }
 
-
-
+button {
+    padding: 15px 25px;
+    font-size: 24px;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: #bbada0;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px  #cdc1b4;
+  }
+  
+  button:active {
+    box-shadow: none;
+    transform: translateY(5px);
+  }
+  
 .center {
     display: flex;
     align-items: center;
