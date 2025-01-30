@@ -366,7 +366,8 @@
         let vectorX = endX - startX;
         let vectorY = endY - startY;
 
-        dragMove(vectorX, vectorY);
+        if (isHuman)
+            dragMove(vectorX, vectorY);
     });
     </script>
 
