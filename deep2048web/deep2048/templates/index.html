@@ -44,15 +44,9 @@
         </div>
         <label for="pet-select">Choose a model:</label>
         <div>
-            <button class='click' onclick="updateRules()">Update</button>
-            <button class='no_click' onclick="testloose()">Test loose</button>
+            <button onclick="setHuman()">Human</button>
+            <button onclick="setRandom()">Random</button>
         </div>
-        <select name="model" id="model-select">
-            <option value="human">Play myself</option>
-            <option value="random">Random</option>
-        </select>
-        <button onclick="updateRules()">Update</button>
-        <button onclick="testloose()">Test loose</button>
     </div>
 </body>
 {% csrf_token %}
@@ -223,26 +217,39 @@
         });
     }
 
-    function updateRules() {
+    function setRandom() {
         const form_size = document.getElementById("myRange");
-        const model = document.getElementById("model-select");
         var buttonBar = document.getElementById("button-bar");
 
-        if (model.value == 'human') {
-            buttonBar.innerHTML = '<button onclick="resetMatrix()" id="reset">Reset</button>';
-        } else {
-            buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
-                '<button onclick="resetMatrix()" id="reset">Reset</button>';
-        }
+        buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+            '<button onclick="resetMatrix()" id="reset">Reset</button>';
 
-        console.log(model.value);
+        resetMatrix();
         $.ajax({
             url: '/update_rules/',
             type: 'POST',
             headers: { 'X-CSRFToken': csrftoken },
             data: {
                 'size': form_size.value,
-                'model': model.value
+            },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    function setHuman() {
+        const form_size = document.getElementById("myRange");
+        var buttonBar = document.getElementById("button-bar");
+
+        buttonBar.innerHTML = '<button onclick="resetMatrix()" id="reset">Reset</button>';
+        resetMatrix();
+        $.ajax({
+            url: '/update_rules/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            data: {
+                'size': form_size.value,
             },
             success: function (response) {
                 updateDisplay(response.matrix, response.score, response.win);
