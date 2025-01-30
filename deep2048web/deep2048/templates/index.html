@@ -73,6 +73,7 @@
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     updateDisplay({{ matrix }}, 0);
     let playing = false;
+    let isHuman = true;
 
     var intervalId = window.setInterval(function () {
         if (playing) {
@@ -224,6 +225,7 @@
         const form_size = document.getElementById("myRange");
         var buttonBar = document.getElementById("button-bar");
 
+        isHuman = false;
         buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
             '<button onclick="resetMatrix()" id="reset">Reset</button>';
 
@@ -245,6 +247,7 @@
         const form_size = document.getElementById("myRange");
         var buttonBar = document.getElementById("button-bar");
 
+        isHuman = true;
         buttonBar.innerHTML = '<button onclick="resetMatrix()" id="reset">Reset</button>';
         resetMatrix();
         $.ajax({
@@ -293,7 +296,6 @@
         }
     }
     document.addEventListener('keydown', handleMouseDown);
-    document.removeEventListener('keydown', handleMouseDown);
 </script>
 
 </html>
