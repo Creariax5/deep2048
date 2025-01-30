@@ -71,9 +71,55 @@
     });
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    updateDisplay({{ matrix }}, 0);
     let playing = false;
     let isHuman = true;
+
+    function setRandom() {
+        const form_size = document.getElementById("myRange");
+        var buttonBar = document.getElementById("button-bar");
+
+        isHuman = false;
+        buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+            '<button onclick="resetMatrix()" id="reset">Reset</button>';
+        document.removeEventListener('keydown', handleMouseDown);
+        resetMatrix();
+        $.ajax({
+            url: '/update_rules/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            data: {
+                'size': form_size.value,
+            },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    function setHuman() {
+        const form_size = document.getElementById("myRange");
+        var buttonBar = document.getElementById("button-bar");
+
+        isHuman = true;
+        buttonBar.innerHTML = '<button onclick="resetMatrix()" id="reset">Reset</button>';
+        document.addEventListener('keydown', handleMouseDown);
+        resetMatrix();
+        $.ajax({
+            url: '/update_rules/',
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            data: {
+                'size': form_size.value,
+            },
+            success: function (response) {
+                updateDisplay(response.matrix, response.score, response.win);
+            }
+        });
+    }
+
+    updateDisplay({{ matrix }}, 0);
+    setHuman();
+
 
     var intervalId = window.setInterval(function () {
         if (playing) {
@@ -221,50 +267,9 @@
         });
     }
 
-    function setRandom() {
-        const form_size = document.getElementById("myRange");
-        var buttonBar = document.getElementById("button-bar");
-
-        isHuman = false;
-        buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
-            '<button onclick="resetMatrix()" id="reset">Reset</button>';
-
-        resetMatrix();
-        $.ajax({
-            url: '/update_rules/',
-            type: 'POST',
-            headers: { 'X-CSRFToken': csrftoken },
-            data: {
-                'size': form_size.value,
-            },
-            success: function (response) {
-                updateDisplay(response.matrix, response.score, response.win);
-            }
-        });
-    }
-
-    function setHuman() {
-        const form_size = document.getElementById("myRange");
-        var buttonBar = document.getElementById("button-bar");
-
-        isHuman = true;
-        buttonBar.innerHTML = '<button onclick="resetMatrix()" id="reset">Reset</button>';
-        resetMatrix();
-        $.ajax({
-            url: '/update_rules/',
-            type: 'POST',
-            headers: { 'X-CSRFToken': csrftoken },
-            data: {
-                'size': form_size.value,
-            },
-            success: function (response) {
-                updateDisplay(response.matrix, response.score, response.win);
-            }
-        });
-    }
-
     function changeSize() {
         const form_size = document.getElementById("myRange");
+        document.getElementById("myRange").blur();
         console.log(form_size.value);
         $.ajax({
             url: '/update_size/',
@@ -295,7 +300,6 @@
                 break;
         }
     }
-    document.addEventListener('keydown', handleMouseDown);
 </script>
 
 </html>
