@@ -72,3 +72,7 @@ def pause(request):
 
 def basic(request):
     return render(request, "basic.html")
+
+def move(request):
+    return render(request, "move.html")
+

@@ -51,7 +51,6 @@
 </body>
 {% csrf_token %}
 <script>
-
     $(document).ready(function(){
         var rangeSlider = function(){
             var slider = $('.range-slider'),
@@ -146,38 +145,42 @@
     }
 
     function updateDisplay(matrix, score, win) {
-        let html = '';
-        html += '<div class="row">';
-        matrix.forEach(line => {
-            html += '<div class="col">';
-            line.forEach(cell => {
-                if (cell < 2) {
-                    html += '<div class="block"></div>';
-                } else if (cell > 4096) {
-                    html += '<div class="block"><div class="block blockBig">' + cell + '</div></div>';
-                } else {
-                    html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
-                }
+        if (false) {
+            return;
+        } else {
+            let html = '';
+            html += '<div class="row">';
+            matrix.forEach(line => {
+                html += '<div class="col">';
+                line.forEach(cell => {
+                    if (cell < 2) {
+                        html += '<div class="block"></div>';
+                    } else if (cell > 4096) {
+                        html += '<div class="block"><div class="block blockBig">' + cell + '</div></div>';
+                    } else {
+                        html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
+                    }
+                });
+                html += '</div>';
             });
             html += '</div>';
-        });
-        html += '</div>';
-        if (win == 0) {
-            $('#loose').html("you loose");
-            playing = false;
+            if (win == 0) {
+                $('#loose').html("you loose");
+                playing = false;
 
-            var buttonBar = document.getElementById("button-bar");
-            var pauseBtn = document.getElementById("pause");
-            if (pauseBtn) {
-                buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
-                    '<button onclick="resetMatrix()" id="reset">Reset</button>';
+                var buttonBar = document.getElementById("button-bar");
+                var pauseBtn = document.getElementById("pause");
+                if (pauseBtn) {
+                    buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+                        '<button onclick="resetMatrix()" id="reset">Reset</button>';
+                }
+            } else {
+                $('#loose').html("");
             }
-        } else {
-            $('#loose').html("");
+            $('#matrix-container').html(html);
+            $('#score').html("Score " + score);
+            updateCSSblock(matrix);
         }
-        $('#matrix-container').html(html);
-        $('#score').html("Score " + score);
-        updateCSSblock(matrix);
     }
 
     function pause() {
@@ -273,7 +276,7 @@
         });
     }
 
-    document.addEventListener('keydown', function (event) {
+    function handleMouseDown(event) {
         switch (event.key) {
             case 'ArrowUp':
                 moveMatrix('up');
@@ -288,7 +291,9 @@
                 moveMatrix('right');
                 break;
         }
-    });
+    }
+    document.addEventListener('keydown', handleMouseDown);
+    document.removeEventListener('keydown', handleMouseDown);
 </script>
 
 </html>

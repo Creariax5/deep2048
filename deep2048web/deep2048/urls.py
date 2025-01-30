@@ -13,4 +13,5 @@ urlpatterns = [
     path("update_size/", views.update_rules, name="update_size"),
     path("update_random/", views.update_random, name="update_random"),
     path("basic/", views.basic, name="basic"),
+    path("move/", views.move, name="move"),
 ]
