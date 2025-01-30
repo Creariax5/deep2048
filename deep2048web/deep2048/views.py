@@ -70,3 +70,5 @@ def pause(request):
         matrix.playing = False
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
 
+def basic(request):
+    return render(request, "basic.html")
