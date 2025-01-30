@@ -4,21 +4,6 @@ body {
     font-family: Arial, sans-serif;
 }
 
-button:before {
-    background-color: #a88615;
-    content: "";
-    display: inline-block;
-    height: 1px;
-    margin-right: 10px;
-    transition: all .42s cubic-bezier(.25, .8, .25, 1);
-    width: 0;
-}
-
-button:hover:before {
-    background-color: #a88615;
-    width: 3rem;
-}
-
 .center {
     display: flex;
     align-items: center;
