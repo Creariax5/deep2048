@@ -69,13 +69,25 @@ class Matrix:
             for j in range(self.size):
                 if self.matrix[i][j] != 0:
                     k = i
+                    initial_pos = (i, j)  # Store initial position
+                    final_k = k
+                    
+                    # First calculate final position
                     while k > 0 and self.matrix[k - 1][j] == 0:
-                        if human:
-                            moves.append(MoveRecord(
-                                self.matrix[k][j],
-                                (k, j),
-                                (k - 1, j)
-                            ))
+                        k -= 1
+                    final_k = k
+                    
+                    # If the piece actually moved, record the complete movement
+                    if human and final_k != i:
+                        moves.append(MoveRecord(
+                            self.matrix[i][j],
+                            initial_pos,
+                            (final_k, j)
+                        ))
+                    
+                    # Now actually perform the movement
+                    k = i
+                    while k > 0 and self.matrix[k - 1][j] == 0:
                         temp = self.matrix[k][j]
                         self.matrix[k][j] = self.matrix[k - 1][j]
                         self.matrix[k - 1][j] = temp
@@ -90,8 +102,8 @@ class Matrix:
                     if human:
                         moves.append(MoveRecord(
                             self.matrix[i][j],
-                            (i, j),
-                            (i - 1, j),
+                            (i, j),          # Original position
+                            (i - 1, j),      # Merge target position
                             merged=True
                         ))
                     self.matrix[i][j] = 0
@@ -120,16 +132,28 @@ class Matrix:
     def go_down(self, human=False):
         moves = [] if human else None
         for i in range(self.size - 1, -1, -1):
-            for j in range(self.size - 1, -1 ,-1):
+            for j in range(self.size - 1, -1, -1):
                 if self.matrix[i][j] != 0:
                     k = i
+                    initial_pos = (i, j)
+                    final_k = k
+                    
+                    # Calculate final position first
                     while k < self.size - 1 and self.matrix[k + 1][j] == 0:
-                        if human:
-                            moves.append(MoveRecord(
-                                self.matrix[k][j],
-                                (k, j),
-                                (k + 1, j)
-                            ))
+                        k += 1
+                    final_k = k
+                    
+                    # Record complete movement if position changed
+                    if human and final_k != i:
+                        moves.append(MoveRecord(
+                            self.matrix[i][j],
+                            initial_pos,
+                            (final_k, j)
+                        ))
+                    
+                    # Perform actual movement
+                    k = i
+                    while k < self.size - 1 and self.matrix[k + 1][j] == 0:
                         temp = self.matrix[k][j]
                         self.matrix[k][j] = self.matrix[k + 1][j]
                         self.matrix[k + 1][j] = temp
@@ -139,7 +163,7 @@ class Matrix:
     def merge_down(self, human=False):
         moves = [] if human else None
         for i in range(self.size - 2, -1, -1):
-            for j in range(self.size - 1, -1 ,-1):
+            for j in range(self.size - 1, -1, -1):
                 if self.matrix[i][j] == self.matrix[i + 1][j] and i < self.size - 1:
                     if human:
                         moves.append(MoveRecord(
@@ -177,13 +201,25 @@ class Matrix:
             for j in range(self.size):
                 if self.matrix[i][j] != 0:
                     k = j
+                    initial_pos = (i, j)
+                    final_k = k
+                    
+                    # Calculate final position first
                     while k > 0 and self.matrix[i][k - 1] == 0:
-                        if human:
-                            moves.append(MoveRecord(
-                                self.matrix[i][k],
-                                (i, k),
-                                (i, k - 1)
-                            ))
+                        k -= 1
+                    final_k = k
+                    
+                    # Record complete movement if position changed
+                    if human and final_k != j:
+                        moves.append(MoveRecord(
+                            self.matrix[i][j],
+                            initial_pos,
+                            (i, final_k)
+                        ))
+                    
+                    # Perform actual movement
+                    k = j
+                    while k > 0 and self.matrix[i][k - 1] == 0:
                         temp = self.matrix[i][k]
                         self.matrix[i][k] = self.matrix[i][k - 1]
                         self.matrix[i][k - 1] = temp
@@ -228,16 +264,28 @@ class Matrix:
     def go_right(self, human=False):
         moves = [] if human else None
         for i in range(self.size - 1, -1, -1):
-            for j in range(self.size - 1, -1 ,-1):
+            for j in range(self.size - 1, -1, -1):
                 if self.matrix[i][j] != 0:
                     k = j
+                    initial_pos = (i, j)
+                    final_k = k
+                    
+                    # Calculate final position first
                     while k < self.size - 1 and self.matrix[i][k + 1] == 0:
-                        if human:
-                            moves.append(MoveRecord(
-                                self.matrix[i][k],
-                                (i, k),
-                                (i, k + 1)
-                            ))
+                        k += 1
+                    final_k = k
+                    
+                    # Record complete movement if position changed
+                    if human and final_k != j:
+                        moves.append(MoveRecord(
+                            self.matrix[i][j],
+                            initial_pos,
+                            (i, final_k)
+                        ))
+                    
+                    # Perform actual movement
+                    k = j
+                    while k < self.size - 1 and self.matrix[i][k + 1] == 0:
                         temp = self.matrix[i][k]
                         self.matrix[i][k] = self.matrix[i][k + 1]
                         self.matrix[i][k + 1] = temp
@@ -247,7 +295,7 @@ class Matrix:
     def merge_right(self, human=False):
         moves = [] if human else None
         for i in range(self.size - 1, -1, -1):
-            for j in range(self.size - 2, -1 ,-1):
+            for j in range(self.size - 2, -1, -1):
                 if self.matrix[i][j] == self.matrix[i][j + 1] and j < self.size - 1:
                     if human:
                         moves.append(MoveRecord(
@@ -329,7 +377,16 @@ class Matrix:
             return self.move_history
 
     def get_move_history(self):
-        return self.move_history
+        return [
+            {
+                'value': move.value,
+                'from_pos': move.from_pos,
+                'to_pos': move.to_pos,
+                'merged': move.merged
+            }
+            for move in self.move_history
+        ]
+
 
     def print_move_history(self):
         print("\nMove History:")

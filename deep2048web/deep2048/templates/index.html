@@ -69,9 +69,11 @@
     });
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const ANIMATION_DURATION = 1;
     document.addEventListener("contextmenu", (event) => event.preventDefault());
     let playing = false;
     let isHuman = true;
+    let inAction = false;
     let startX, startY, endX, endY;
 
     function setRandom() {
@@ -147,7 +149,7 @@
                 'direction': direction
             },
             success: function (response) {
-                updateHumanDisplay(response.matrix, response.score, response.win);
+                updateHumanDisplay(response.matrix, response.score, response.win, response.move_history);
             }
         });
     }
@@ -191,39 +193,117 @@
         });
     }
 
-    function updateHumanDisplay(matrix, score, win) {
-        let html = '';
-        html += '<div class="row">';
-        matrix.forEach(line => {
-            html += '<div class="col">';
-            line.forEach(cell => {
-                if (cell < 2) {
-                    html += '<div class="block"></div>';
-                } else if (cell > 4096) {
-                    html += '<div class="block"><div class="block blockBig">' + cell + '</div></div>';
-                } else {
-                    html += '<div class="block"><div class="block block' + cell + '">' + cell + '</div></div>';
-                }
+    function updateHumanDisplay(matrix, score, win, move_history) {
+        inAction = true;
+        const ANIMATION_DURATION = 50;
+
+        // First render if matrix container is empty
+        if ($('#matrix-container').is(':empty')) {
+            let html = '<div class="row">';
+            matrix.forEach((line, i) => {
+                html += '<div class="col">';
+                line.forEach((cell, j) => {
+                    if (cell < 2) {
+                        html += `<div class="block" data-pos="${i}-${j}"></div>`;
+                    } else {
+                        const blockClass = cell > 4096 ? 'blockBig' : `block${cell}`;
+                        html += `<div class="block" data-pos="${i}-${j}">
+                                <div class="block ${blockClass}" data-value="${cell}">${cell}</div>
+                            </div>`;
+                    }
+                });
+                html += '</div>';
             });
             html += '</div>';
-        });
-        html += '</div>';
-        if (win == 0) {
-            $('#loose').html("you loose");
-            playing = false;
-
-            var buttonBar = document.getElementById("button-bar");
-            var pauseBtn = document.getElementById("pause");
-            if (pauseBtn) {
-                buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
-                    '<button onclick="resetMatrix()" id="reset">Reset</button>';
-            }
-        } else {
-            $('#loose').html("");
+            $('#matrix-container').html(html);
         }
-        $('#matrix-container').html(html);
-        $('#score').html("Score " + score);
-        updateCSSblock(matrix);
+
+        // Group moves by stage
+        const nonMergedMoves = move_history.filter(move => !move.merged && move.value !== 0);
+        const mergedMoves = move_history.filter(move => move.merged && move.value !== 0);
+
+        // Case size constants
+        const CASE_SIZE = 106.25; // Block width
+        const MARGIN = 15;    // Margin between blocks
+
+        // Animate all non-merged moves simultaneously
+        nonMergedMoves.forEach(move => {
+            const [fromX, fromY] = move.from_pos;
+            const [toX, toY] = move.to_pos;
+            
+            const $fromCell = $(`.block[data-pos="${fromX}-${fromY}"] > div`);
+            
+            if ($fromCell.length) {
+                // Calculate total movement distance
+                const totalDeltaX = (toY - fromY) * (CASE_SIZE + MARGIN);
+                const totalDeltaY = (toX - fromX) * (CASE_SIZE);
+
+                $fromCell.css({
+                    'position': 'absolute',
+                    'zIndex': '1'
+                }).animate({
+                    left: `${totalDeltaX}px`,
+                    top: `${totalDeltaY}px`
+                }, ANIMATION_DURATION, 'linear');
+
+                console.log('Animation applied:', {
+                    fromPos: [fromX, fromY],
+                    toPos: [toX, toY],
+                    deltaX: totalDeltaX,
+                    deltaY: totalDeltaY
+                });
+            }
+        });
+
+        // Rest of the function remains the same...
+        setTimeout(() => {
+            mergedMoves.forEach(move => {
+                const [toX, toY] = move.to_pos;
+                const value = move.value;
+                
+                const $toCell = $(`.block[data-pos="${toX}-${toY}"]`);
+                const newValue = value * 2;
+                const blockClass = newValue > 4096 ? 'blockBig' : `block${newValue}`;
+                $toCell.html(`<div class="block ${blockClass} merged" data-value="${newValue}">${newValue}</div>`);
+            });
+
+            setTimeout(() => {
+                let html = '<div class="row">';
+                matrix.forEach((line, i) => {
+                    html += '<div class="col">';
+                    line.forEach((cell, j) => {
+                        if (cell < 2) {
+                            html += `<div class="block" data-pos="${i}-${j}"></div>`;
+                        } else {
+                            const blockClass = cell > 4096 ? 'blockBig' : `block${cell}`;
+                            html += `<div class="block" data-pos="${i}-${j}">
+                                    <div class="block ${blockClass}" data-value="${cell}">${cell}</div>
+                                </div>`;
+                        }
+                    });
+                    html += '</div>';
+                });
+                html += '</div>';
+                
+                if (win == 0) {
+                    $('#loose').html("you loose");
+                    playing = false;
+                    var buttonBar = document.getElementById("button-bar");
+                    var pauseBtn = document.getElementById("pause");
+                    if (pauseBtn) {
+                        buttonBar.innerHTML = '<button onclick="play()" id="play">Play</button>' +
+                            '<button onclick="resetMatrix()" id="reset">Reset</button>';
+                    }
+                } else {
+                    $('#loose').html("");
+                }
+                
+                $('#matrix-container').html(html);
+                $('#score').html("Score " + score);
+                updateCSSblock(matrix);
+                inAction = false;
+            }, ANIMATION_DURATION);
+        }, ANIMATION_DURATION);
     }
 
     function updateDisplay(matrix, score, win) {
@@ -316,7 +396,7 @@
     }
 
     function handleMouseDown(event) {
-        if (isHuman) {
+        if (isHuman && !inAction) {
             switch (event.key) {
                 case 'ArrowUp':
                     moveMatrix('up');
@@ -364,7 +444,7 @@
         let vectorX = endX - startX;
         let vectorY = endY - startY;
 
-        if (isHuman)
+        if (isHuman && !inAction)
             dragMove(vectorX, vectorY);
     });
     </script>

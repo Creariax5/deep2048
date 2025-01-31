@@ -27,8 +27,7 @@ def update_matrix(request):
         matrix.test_loose()
         direction = request.POST.get('direction')
         matrix.move_inp(direction, True)
-        matrix.print_move_history()
-        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win, 'move_history': matrix.get_move_history()})
 
 def reset_matrix(request):
     if request.method == "POST":
