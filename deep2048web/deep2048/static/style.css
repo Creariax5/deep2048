@@ -34,7 +34,43 @@ body {
     margin: 0;
     padding: 0;
   }
-  
+
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.scrollable-section {
+    height: 300px;
+    overflow-y: auto;
+    border: 2px solid #ddd;
+    padding: 10px; /* Padding interne */
+    background: #fff;
+}
+
+.slot_leaderboard {
+    width: 100%;        /* Prend toute la largeur du parent */
+    margin: 0;          /* Supprime les marges */
+    padding: 0;         /* Supprime les padding si nécessaire */
+    box-sizing: border-box; /* Garde la bordure dans la largeur totale */
+    text-align: center;
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#slot_0 {
+    background-color: #faf8ef;
+}
+
+#slot_1 {
+    background-color: #fffef5;
+}
+
 
 
 input[type="range"] {
@@ -217,3 +253,4 @@ button {
     margin: 20px;
     user-select: none;
 }
+

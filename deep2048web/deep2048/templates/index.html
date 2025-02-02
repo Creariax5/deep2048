@@ -39,13 +39,20 @@
     </div>
     <div class="form">
         <div class="range-slider">
-            <input onchange="changeSize()" type="range" min="2" max="9" value="4" class="slider" id="myRange">
+            <input onchange="changeSize()" type="range" min="2" max="8" value="4" class="slider" id="myRange">
         </div>
         <div>
             <button onclick="setHuman()">Human</button>
             <button onclick="setRandom()">Random</button>
         </div>
     </div>
+    <div>
+        <button onclick="getScore()">send</button>
+        <input type="text" class="input" placeholder="Entrez votre nom">
+        <p id="send"></p>
+    </div>
+    <button onclick="showLeaderboard()">leaderboard</button>
+    <div id="leaderboard-container"></div>
 </body>
 {% csrf_token %}
 <script>
@@ -165,6 +172,88 @@
         });
     }
 
+    function closeLeaderboard() {
+        let lead = document.getElementById('leaderboard-container');
+        lead.innerHTML = "";
+    }
+
+    function showLeaderboard() {
+        let lead = document.getElementById('leaderboard-container');
+        let size = document.getElementById('myRange').value;
+        lead.innerHTML = `
+            <div class="container">
+                <h2>Leaderboard</h2>
+                <div class="scrollable-section" id="leaderboard"></div>
+                <button onclick="loadScore(3)">3x3</button>
+                <button onclick="loadScore(4)">4x4</button>
+                <button onclick="loadScore(5)">5x5</button>
+                <button onclick="loadScore(6)">6x6</button>
+                <button onclick="loadScore(7)">7x7</button>
+                <button onclick="loadScore(8)">8x8</button>
+                <button onclick="loadScore(9)">9x9</button>
+                <button onclick="closeLeaderboard()">close</button>
+            </div>
+        `;
+        loadScore(size);
+    }
+
+    function getScore() {
+        let valeur = document.querySelector(".input").value;
+        let score = document.getElementById("score").innerText;
+        let size = document.getElementById("myRange").value;
+        let texte = document.getElementById("send");
+
+        if (valeur == "") {
+            texte.innerHTML = "the value is null";
+            return;
+        } else {
+            texte.innerHTML = "";
+        }
+
+        console.log(valeur , size, score);
+        $.ajax({
+            url: '/get_score/',  // Make sure this matches your urls.py
+            type: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            data: {
+                'name' : valeur,
+                'size' : size,
+                'score' : score
+            }
+        });
+        loadScore(size);
+    }
+
+    function mergeSort(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    let mid = Math.floor(arr.length / 2);
+    let left = mergeSort(arr.slice(0, mid));
+    let right = mergeSort(arr.slice(mid));
+
+    return merge(left, right);
+    }
+
+    function merge(left, right) {
+        let sortedArray = [];
+        let i = 0, j = 0;
+
+        while (i < left.length && j < right.length) {
+            if (left[i].score > right[j].score) {
+                sortedArray.push(left[i]);
+                i++;
+            } else {
+                sortedArray.push(right[j]);
+                j++;
+            }
+        }
+
+        // Ajouter les éléments restants (s'il y en a)
+        return sortedArray.concat(left.slice(i)).concat(right.slice(j));
+    }
+
     function resetMatrix() {
         $.ajax({
             url: '/reset/',  // Make sure this matches your urls.py
@@ -195,7 +284,7 @@
 
     function updateHumanDisplay(matrix, score, win, move_history) {
         inAction = true;
-        const ANIMATION_DURATION = 50;
+        const ANIMATION_DURATION = 5;
 
         // First render if matrix container is empty
         if ($('#matrix-container').is(':empty')) {
@@ -377,6 +466,42 @@
             }
         });
     }
+
+    function load(callback) {
+    $.ajax({
+        url: '/load_score/',
+        type: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        success: function (response) {
+            callback(response.liste_score);
+        }
+    });
+    }
+
+    function getListSize(size, list) {
+        let result = [];
+        list.forEach((score, index) => {
+                if (score.size == size) {
+                    result.push(score);
+                }
+            });
+        return result
+    }
+
+    function loadScore(size) {
+        let leaderboard = document.getElementById('leaderboard');
+        if (leaderboard) {
+            load(function (scores) {
+                leaderboard.innerHTML = "";
+                let list = getListSize(size, scores);
+                list = mergeSort(list);
+                list.forEach((score, index) => {
+                        leaderboard.innerHTML += `<p class="slot_leaderboard" id="slot_${index % 2}">${score.name} : ${score.score}</p>`;
+                });
+            });
+    };
+    }
+
 
     function changeSize() {
         const form_size = document.getElementById("myRange");

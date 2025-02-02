@@ -3,12 +3,18 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .matrix import Matrix
+from .models import Score
 from .player import Player
 from random import randint
 from copy import deepcopy
+import re
 
 matrixBefore = Matrix("Jeremy", 4)
 matrix = Matrix("Jeremy", 4)
+
+def extraire_nombre_fin(chaine):
+    match = re.search(r'(\d+)$', chaine) 
+    return int(match.group(1)) if match else None 
 
 def index(request):
     matrix.reset()
@@ -75,3 +81,16 @@ def basic(request):
 
 def move(request):
     return render(request, "move.html")
+
+def get_score(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        size = int(request.POST.get('size'))
+        score = extraire_nombre_fin(request.POST.get('score'))
+        Score.objects.create(name=name, size=size, score=score)
+
+def load_score(request):
+    if request.method == "POST":
+        liste_score = list(Score.objects.values())
+        #print(liste_score)
+        return JsonResponse({'liste_score' : liste_score})

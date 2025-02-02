@@ -1,3 +1,10 @@
 from django.db import models
 
-# Create your models here.
+class Score(models.Model):
+    name = models.CharField(max_length=200)  # Champ texte limité à 200 caractères
+    score = models.IntegerField()
+    size = models.IntegerField(default=4)
+    date_publication = models.DateTimeField(auto_now_add=True)  # Date de publication automatique
+
+    def __str__(self):
+        return self.name
