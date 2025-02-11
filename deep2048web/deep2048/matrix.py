@@ -62,6 +62,14 @@ class Matrix:
             self.player.finish = True
         else:
             self.matrix[vec.x][vec.y] = nb
+            # Add this to track initial placements
+            if hasattr(self, 'move_history'):
+                self.move_history.append(MoveRecord(
+                    nb,
+                    (-1, -1),  # Special coordinate to indicate spawned tile
+                    (vec.x, vec.y),
+                    False
+                ))
 
     def go_up(self, human=False):
         moves = [] if human else None
@@ -331,10 +339,16 @@ class Matrix:
         if self.matrix != matrixBefore.matrix:
             self.player.moves += 1
             nb = randint(0, 9)
-            if (nb == 0):
-                self.set_rnd_empty_case(4)
-            else:
-                self.set_rnd_empty_case(2)
+            value = 4 if nb == 0 else 2
+            vec = self.get_rnd_empty_case()
+            if vec:
+                self.matrix[vec.x][vec.y] = value
+                self.move_history.append(MoveRecord(
+                    value,
+                    (-1, -1),  # Special coordinate to indicate spawned tile
+                    (vec.x, vec.y),
+                    False
+                ))
     
     def test_loose(self):
         new_mat = deepcopy(self)

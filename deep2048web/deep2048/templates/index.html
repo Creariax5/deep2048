@@ -76,7 +76,7 @@
     });
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const ANIMATION_DURATION = 1;
+    const ANIMATION_DURATION = 20;
     document.addEventListener("contextmenu", (event) => event.preventDefault());
     let playing = false;
     let isHuman = true;
@@ -282,9 +282,21 @@
         });
     }
 
+    function calculateGridSizes(matrix) {
+        const BASE_WIDTH = 107;
+        const size = (12 - matrix.length);
+        
+        const CASE_SIZE = size * BASE_WIDTH / 6;
+        const MARGIN = (CASE_SIZE / 106.25) * 15;
+        
+        return {
+            CASE_SIZE,
+            MARGIN
+        };
+    }
+
     function updateHumanDisplay(matrix, score, win, move_history) {
         inAction = true;
-        const ANIMATION_DURATION = 5;
 
         // First render if matrix container is empty
         if ($('#matrix-container').is(':empty')) {
@@ -312,8 +324,7 @@
         const mergedMoves = move_history.filter(move => move.merged && move.value !== 0);
 
         // Case size constants
-        const CASE_SIZE = 106.25; // Block width
-        const MARGIN = 15;    // Margin between blocks
+        const { CASE_SIZE, MARGIN } = calculateGridSizes(matrix);
 
         // Animate all non-merged moves simultaneously
         nonMergedMoves.forEach(move => {
