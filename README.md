@@ -2,7 +2,7 @@
 
 A deep learning project that teaches an AI to play the popular game 2048. The AI learns and improves its gameplay strategies through reinforcement learning.
 
-![2048 Game Interface](project-screenshot.png)
+![2048 Game Interface](https://github.com/user-attachments/assets/7b2f7c1b-47e3-41f8-92b8-771571f212b2)
 
 ## Overview
 
