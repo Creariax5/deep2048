@@ -5,7 +5,7 @@ import my2048
 from IApredict import IApredict
 import minimaxAlgorithm
 
-iter = 10000
+iter = 1000
 board_size = 3
 
 #IA prediction
