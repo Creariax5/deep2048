@@ -50,11 +50,15 @@
         </div>
         
         <div class="leaderboard-section">
-            <button onclick="getScore()">send</button>
-            <input type="text" class="input" placeholder="Entrez votre nom">
-            <p id="send"></p>
-            <button onclick="showLeaderboard()">leaderboard</button>
+            <button onclick="showLeaderboard()" style="margin-left: 80px; margin-top: 100px;">leaderboard</button>
             <div id="leaderboard-container"></div>
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <input type="text" class="input" placeholder="Entrez votre nom" style="margin-right: 10px;">
+                    <button onclick="getScore()">send</button>
+                </div>
+                <p id="send"></p>
+            </div>
         </div>
     </div>
 </body>
