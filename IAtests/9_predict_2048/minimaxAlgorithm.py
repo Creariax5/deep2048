@@ -1,6 +1,5 @@
 import numpy as np
 import random
-from copy import deepcopy
 from my2048 import Numpy2048
 
 def evaluate_board(board):

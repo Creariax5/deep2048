@@ -4,9 +4,10 @@ from tqdm import tqdm
 import my2048
 from IApredict import IApredict
 import minimaxAlgorithm
+import newMinmax
 
-iter = 1000
-board_size = 3
+iter = 1
+board_size = 4
 
 #IA prediction
 width = 32
@@ -25,7 +26,7 @@ moyenne = 0
 Loss = []
 
 for _ in tqdm(range(iter)):
-    stats = my2048.play_game(board_size, ai_predictor.best_move)
+    stats = my2048.play_game(board_size, newMinmax.best_move)
     durations.append(stats['duration'])
     moves.append(stats['moves'])
     moyenne += stats['score']
