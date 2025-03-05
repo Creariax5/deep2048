@@ -1,0 +1,8 @@
+network = Network.init()
+
+for i in range(iter):
+    game = Game.init(empty_board)
+
+    while not game.finished:
+        move = network.process_move(board)
+        game.move(move)

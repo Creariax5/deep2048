@@ -1,0 +1,30 @@
+class Network:
+    def init(self, params):
+        self.ε = 0.9  # Discount factor for future rewards
+        self.max_move_ahead = 20
+        # init network
+    
+    def get_best_move(self, board):
+        X = np.array(board).flatten()
+        activations = self.forward_propagation(X)
+        return np.argmax(activations[-1].T[-1])
+
+    def process_move(self, board):
+        best_move = self.get_best_move(board)
+        self.train(board, best_move)
+        return best_move
+    
+    def train(self, board, best_move):
+        game = Game.init(board)
+        reward = 0
+        i = 0
+        while not game.finished and i < max_move_ahead:
+            game.move(best_move)
+            reward += self.evaluate(board) * self.ε ** i
+            best_move = self.get_best_move(self, board)
+            i += 1
+        self.backpropagation(reward)
+        self.minimisation()
+    
+    def evaluate(self, board):
+        # evaluate board

@@ -1,0 +1,7 @@
+class Game:
+    def init(self, board):
+        self.board = board
+        self.finished = False
+    
+    def move(self, move):
+        # do move
