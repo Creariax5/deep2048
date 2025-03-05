@@ -10,49 +10,57 @@
 </head>
 
 <body>
-    <div class="center">
-        <div>
-            <h1>
-                2048
-            </h1>
-            <h3 id="score">
-                Score: 0
-            </h3>
+    <div class="game-container">
+        <div class="left-controls">
+            <div class="range-slider">
+                <input onchange="changeSize()" type="range" min="2" max="8" value="4" class="slider" id="myRange">
+            </div>
+            <div class="left-controls">
+                <button onclick="setHuman()">Human</button>
+                <button onclick="setRandom()">Random</button>
+            </div>
         </div>
-        <h2 id="loose"></h2>
-    </div>
-    <div class="center">
-        <div id="matrix-container">
-            <div class="row">
-                {% for line in matrix %}
-                <div class="col">
-                    {% for case in line %}
-                    <div class="block">{{ case }}</div>
+        
+        <div class="">
+            <div class="header center">
+                <div>
+                    <h1>
+                        2048
+                    </h1>
+                    <h3 id="score">
+                        Score: 0
+                    </h3>
+                </div>
+                <h2 id="loose"></h2>
+            </div>
+            <div id="matrix-container">
+                <div class="row">
+                    {% for line in matrix %}
+                    <div class="col">
+                        {% for case in line %}
+                        <div class="block">{{ case }}</div>
+                        {% endfor %}
+                    </div>
                     {% endfor %}
                 </div>
-                {% endfor %}
+            </div>
+            <div id="button-bar">
+                <button onclick="resetMatrix()" id="reset">Reset</button>
+            </div>
+        </div>
+        
+        <div class="leaderboard-section">
+            <button onclick="showLeaderboard()" style="margin-left: 80px; margin-top: 100px;">leaderboard</button>
+            <div id="leaderboard-container"></div>
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <input type="text" class="input" placeholder="Entrez votre nom" style="margin-right: 10px;">
+                    <button onclick="getScore()">send</button>
+                </div>
+                <p id="send"></p>
             </div>
         </div>
     </div>
-    <div class="center" id="button-bar">
-        <button onclick="resetMatrix()" id="reset">Reset</button>
-    </div>
-    <div class="form">
-        <div class="range-slider">
-            <input onchange="changeSize()" type="range" min="2" max="8" value="4" class="slider" id="myRange">
-        </div>
-        <div>
-            <button onclick="setHuman()">Human</button>
-            <button onclick="setRandom()">Random</button>
-        </div>
-    </div>
-    <div>
-        <button onclick="getScore()">send</button>
-        <input type="text" class="input" placeholder="Entrez votre nom">
-        <p id="send"></p>
-    </div>
-    <button onclick="showLeaderboard()">leaderboard</button>
-    <div id="leaderboard-container"></div>
 </body>
 {% csrf_token %}
 <script>
