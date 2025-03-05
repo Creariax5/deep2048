@@ -5,7 +5,7 @@ import my2048
 from ReinforcementLearningAI import ReinforcementLearningAI
 
 # Training parameters
-iter = 200
+iter = 2000
 board_size = 3
 hidden_size = 256  # Increased for more complex patterns
 learning_rate = 0.0005  # Reduced for more stable learning

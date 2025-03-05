@@ -6,13 +6,13 @@ from IApredict import IApredict
 import minimaxAlgorithm
 import newMinmax
 
-iter = 1
-board_size = 4
+iter = 10000
+board_size = 3
 
 #IA prediction
-width = 32
-length = 2
-learning_rate = 0.01
+width = 256
+length = 4
+learning_rate = 0.005
 ai_predictor = IApredict(board_size, width, length, learning_rate)
 
 
