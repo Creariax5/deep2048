@@ -12,7 +12,7 @@ def evaluate_board(board):
     # Penalize scattered high values
     diff_horizontal = np.abs(np.diff(board, axis=1))
     diff_vertical = np.abs(np.diff(board, axis=0))
-    score -= (np.sum(diff_horizontal) + np.sum(diff_vertical)) * 0.05
+    score -= (np.sum(diff_horizontal) + np.sum(diff_vertical)) * 0.5
     return score
 
 def minimax(game, depth, is_maximizing, moves):
@@ -60,7 +60,7 @@ def minimax(game, depth, is_maximizing, moves):
         
         return min_eval, None
 
-def best_move(board, depth=1):
+def best_move(board, depth=3):
     game = Numpy2048(board.shape[0])
     game.board = board.copy()
     moves = {0: 'up', 1: 'left', 2: 'down', 3: 'right'}
