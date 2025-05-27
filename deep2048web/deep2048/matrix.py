@@ -3,6 +3,7 @@ from .vector import Vector
 from .player import Player, Model
 from copy import deepcopy
 from typing import List, Tuple
+import numpy as np
 
 class MoveRecord:
     def __init__(self, value: int, from_pos: Tuple[int, int], to_pos: Tuple[int, int], merged: bool = False):
@@ -377,8 +378,11 @@ class Matrix:
         if nb == 3:
             self.move_right()
     
-    def model_move(self, move):
-        direction = move(self.matrix.matrix)
+    def model_move(self, move):        
+        board_array = np.array(self.matrix)
+        direction = move(board_array)
+        
+        print(f"Model move direction: {direction}")
         if direction == 0:
             return self.move_up()
         elif direction == 1:

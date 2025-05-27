@@ -73,7 +73,7 @@ def play(request):
         matrix.playing = True
         matrix.reset()
         while matrix.playing:
-            matrix.model_move(newMinmax.best_move)
+            matrix.random_move()
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
     
 def play_ia(request):
@@ -81,7 +81,7 @@ def play_ia(request):
         matrix.playing = True
         matrix.reset()
         while matrix.playing:
-            matrix.random_move()
+            matrix.model_move(newMinmax.best_move)
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
 
 def pause(request):
