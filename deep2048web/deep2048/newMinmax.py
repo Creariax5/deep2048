@@ -9,7 +9,6 @@ class AI2048:
         self.max_time = max_time
         self.start_time = 0
         self.moves = {0: 'up', 1: 'left', 2: 'down', 3: 'right'}
-
         self.preferred_move_order = [0, 1, 3, 2]
         
         self.snake_pattern = np.array([
@@ -150,6 +149,7 @@ class AI2048:
             for j in range(3):
                 if board[i, j] > 0 and board[i, j] == board[i, j+1]:
                     merge_score += board[i, j] * 2
+        
         for i in range(3):
             for j in range(4):
                 if board[i, j] > 0 and board[i, j] == board[i+1, j]:
