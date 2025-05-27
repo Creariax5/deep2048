@@ -60,7 +60,7 @@ def minimax(game, depth, is_maximizing, moves):
         
         return min_eval, None
 
-def best_move(board, depth=2):
+def best_move(board, depth=5):
     game = Numpy2048(board.shape[0])
     game.board = board.copy()
     moves = {0: 'up', 1: 'left', 2: 'down', 3: 'right'}

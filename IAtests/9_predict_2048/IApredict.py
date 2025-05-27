@@ -28,13 +28,9 @@ class IApredict:
         max_eval = float('-inf')
         best_move = None
         
-        # Try each possible move
         for move_idx, move_dir in moves.items():
-            # Create a copy of the game state
             game_copy = type(game)(game.board.shape[0])
             game_copy.board = game.board.copy()
-            
-            # If move is valid, evaluate resulting position
             if game_copy.move(move_dir):
                 score = self.predict_final_score(game_copy.board)
                 if score > max_eval:

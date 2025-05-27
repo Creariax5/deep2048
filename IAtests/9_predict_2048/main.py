@@ -43,7 +43,8 @@ print("score moyen: ", moyenne)
 fig, (ax1,ax2) = plt.subplots(2,1,figsize=(10,8))
 ax1.plot(scores,'b',label='Score moyen');ax1.set_title('Score Moyen')
 # ax2.plot([l*learning_rate for l in Loss],'r',label='Loss');ax2.set_title('Loss')
-plt.tight_layout();plt.show()
+plt.tight_layout()
+plt.show()
 
 # Create scatter plot
 # plt.scatter(durations, scores, c=scores)

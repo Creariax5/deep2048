@@ -10,7 +10,6 @@ class AI2048:
         self.start_time = 0
         self.moves = {0: 'up', 1: 'left', 2: 'down', 3: 'right'}
         self.preferred_move_order = [0, 1, 3, 2]  # up, left, right, down preference
-        
         # Plusieurs matrices de poids pour différentes stratégies
         # Snake pattern classique (en zigzag)
         self.snake_pattern = np.array([
@@ -178,8 +177,7 @@ class AI2048:
         for i in range(4):
             for j in range(3):
                 if board[i, j] > 0 and board[i, j] == board[i, j+1]:
-                    merge_score += board[i, j] * 2  # Récompense plus élevée pour les grandes valeurs
-        
+                    merge_score += board[i, j] * 2
         # Vérifier les fusions verticales
         for i in range(3):
             for j in range(4):
