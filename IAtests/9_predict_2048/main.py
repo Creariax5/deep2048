@@ -10,10 +10,10 @@ iter = 10
 board_size = 4
 
 #IA prediction
-width = 256
-length = 4
-learning_rate = 0.005
-ai_predictor = IApredict(board_size, width, length, learning_rate)
+# width = 256
+# length = 4
+# learning_rate = 0.005
+# ai_predictor = IApredict(board_size, width, length, learning_rate)
 
 
 # Collect stats
