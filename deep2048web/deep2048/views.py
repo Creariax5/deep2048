@@ -8,7 +8,7 @@ from .player import Player
 from random import randint
 from copy import deepcopy
 import re
-
+from . import newMinmax
 matrixBefore = Matrix("Jeremy", 4)
 matrix = Matrix("Jeremy", 4)
 
@@ -62,8 +62,21 @@ def update_random(request):
     if request.method == "POST":
         matrix.random_move()
         return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+    
+def update_model(request):
+    if request.method == "POST":
+        matrix.model_move(newMinmax.best_move)
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
 
 def play(request):
+    if request.method == "POST":
+        matrix.playing = True
+        matrix.reset()
+        while matrix.playing:
+            matrix.model_move(newMinmax.best_move)
+        return JsonResponse({'matrix': matrix.matrix, 'score': matrix.player.score, 'win': matrix.win})
+    
+def play_ia(request):
     if request.method == "POST":
         matrix.playing = True
         matrix.reset()
