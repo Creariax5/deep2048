@@ -55,7 +55,7 @@ class Numpy2048:
             board = np.flip(new_board, axis=1)
         elif direction == 'up':
             board = new_board.T
-        else:  # down
+        else:
             board = np.flip(new_board.T, axis=1)
         
         for i in range(self.size):
@@ -120,7 +120,6 @@ def play_game(size=4, mode=random_move):
         if move in moves:
             if game.move(moves[move]):
                 moves_count += 1
-    # game.display()
     
     end_time = time.time()
     duration = end_time - start_time

@@ -498,15 +498,25 @@
         var buttonBar = document.getElementById("button-bar");
         buttonBar.innerHTML = '<button onclick="pause()" id="pause">Pause</button>' +
             '<button onclick="resetMatrix()" id="reset">Reset</button>';
-
-        $.ajax({
-            url: '/play/',
-            type: 'POST',
-            headers: { 'X-CSRFToken': csrftoken },
-            success: function (response) {
-                updateDisplay(response.matrix, response.score, response.win);
-            }
-        });
+        if (isHuman == 0) {
+            $.ajax({
+                url: '/play/',
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                success: function (response) {
+                    updateDisplay(response.matrix, response.score, response.win);
+                }
+            });
+        } else {
+            $.ajax({
+                url: '/play_ia/',
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                success: function (response) {
+                    updateDisplay(response.matrix, response.score, response.win);
+                }
+            });
+        }
     }
 
     function load(callback) {

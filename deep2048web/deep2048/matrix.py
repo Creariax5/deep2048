@@ -63,11 +63,10 @@ class Matrix:
             self.player.finish = True
         else:
             self.matrix[vec.x][vec.y] = nb
-            # Add this to track initial placements
             if hasattr(self, 'move_history'):
                 self.move_history.append(MoveRecord(
                     nb,
-                    (-1, -1),  # Special coordinate to indicate spawned tile
+                    (-1, -1),
                     (vec.x, vec.y),
                     False
                 ))
@@ -78,23 +77,17 @@ class Matrix:
             for j in range(self.size):
                 if self.matrix[i][j] != 0:
                     k = i
-                    initial_pos = (i, j)  # Store initial position
+                    initial_pos = (i, j)
                     final_k = k
-                    
-                    # First calculate final position
                     while k > 0 and self.matrix[k - 1][j] == 0:
                         k -= 1
                     final_k = k
-                    
-                    # If the piece actually moved, record the complete movement
                     if human and final_k != i:
                         moves.append(MoveRecord(
                             self.matrix[i][j],
                             initial_pos,
                             (final_k, j)
                         ))
-                    
-                    # Now actually perform the movement
                     k = i
                     while k > 0 and self.matrix[k - 1][j] == 0:
                         temp = self.matrix[k][j]
@@ -111,8 +104,8 @@ class Matrix:
                     if human:
                         moves.append(MoveRecord(
                             self.matrix[i][j],
-                            (i, j),          # Original position
-                            (i - 1, j),      # Merge target position
+                            (i, j),
+                            (i - 1, j),
                             merged=True
                         ))
                     self.matrix[i][j] = 0
@@ -122,7 +115,7 @@ class Matrix:
 
     def move_up(self, human=False):
         matrixBefore = deepcopy(self)
-        self.move_history = []  # Clear previous move history
+        self.move_history = []
         
         if human:
             moves1 = self.go_up(human=True)
@@ -146,21 +139,15 @@ class Matrix:
                     k = i
                     initial_pos = (i, j)
                     final_k = k
-                    
-                    # Calculate final position first
                     while k < self.size - 1 and self.matrix[k + 1][j] == 0:
                         k += 1
                     final_k = k
-                    
-                    # Record complete movement if position changed
                     if human and final_k != i:
                         moves.append(MoveRecord(
                             self.matrix[i][j],
                             initial_pos,
                             (final_k, j)
                         ))
-                    
-                    # Perform actual movement
                     k = i
                     while k < self.size - 1 and self.matrix[k + 1][j] == 0:
                         temp = self.matrix[k][j]
@@ -188,7 +175,7 @@ class Matrix:
 
     def move_down(self, human=False):
         matrixBefore = deepcopy(self)
-        self.move_history = []  # Clear previous move history
+        self.move_history = []
         
         if human:
             moves1 = self.go_down(human=True)
@@ -213,12 +200,10 @@ class Matrix:
                     initial_pos = (i, j)
                     final_k = k
                     
-                    # Calculate final position first
                     while k > 0 and self.matrix[i][k - 1] == 0:
                         k -= 1
                     final_k = k
                     
-                    # Record complete movement if position changed
                     if human and final_k != j:
                         moves.append(MoveRecord(
                             self.matrix[i][j],
@@ -226,7 +211,6 @@ class Matrix:
                             (i, final_k)
                         ))
                     
-                    # Perform actual movement
                     k = j
                     while k > 0 and self.matrix[i][k - 1] == 0:
                         temp = self.matrix[i][k]
@@ -254,7 +238,7 @@ class Matrix:
 
     def move_left(self, human=False):
         matrixBefore = deepcopy(self)
-        self.move_history = []  # Clear previous move history
+        self.move_history = []
         
         if human:
             moves1 = self.go_left(human=True)
@@ -279,12 +263,10 @@ class Matrix:
                     initial_pos = (i, j)
                     final_k = k
                     
-                    # Calculate final position first
                     while k < self.size - 1 and self.matrix[i][k + 1] == 0:
                         k += 1
                     final_k = k
                     
-                    # Record complete movement if position changed
                     if human and final_k != j:
                         moves.append(MoveRecord(
                             self.matrix[i][j],
@@ -292,7 +274,6 @@ class Matrix:
                             (i, final_k)
                         ))
                     
-                    # Perform actual movement
                     k = j
                     while k < self.size - 1 and self.matrix[i][k + 1] == 0:
                         temp = self.matrix[i][k]
@@ -320,7 +301,7 @@ class Matrix:
 
     def move_right(self, human=False):
         matrixBefore = deepcopy(self)
-        self.move_history = []  # Clear previous move history
+        self.move_history = []
         
         if human:
             moves1 = self.go_right(human=True)
@@ -346,7 +327,7 @@ class Matrix:
                 self.matrix[vec.x][vec.y] = value
                 self.move_history.append(MoveRecord(
                     value,
-                    (-1, -1),  # Special coordinate to indicate spawned tile
+                    (-1, -1),
                     (vec.x, vec.y),
                     False
                 ))
@@ -354,15 +335,10 @@ class Matrix:
     def test_loose(self):
         new_mat = deepcopy(self)
         new_mat.move_up()
-        #print("up", new_mat.matrix)
         new_mat.move_down()
-        #print("d", new_mat.matrix)
         new_mat.move_left()
-        #print("l", new_mat.matrix)
         new_mat.move_right()
-        #print("r", new_mat.matrix)
         if new_mat.matrix == self.matrix:
-            #print(new_mat.matrix, self.matrix)
             self.win = 0
             return 0
         return 1
